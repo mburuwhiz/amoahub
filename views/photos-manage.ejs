@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Photos | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/onboarding.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="onboarding-container" style="margin-top: 5rem; max-width: 800px;">
+        <div class="onboarding-card">
+            <h2>Manage Your Photos</h2>
+            <p>Add, remove, or change your profile picture. Your photos are your first impression!</p>
+
+            <%- include('partials/_messages') %>
+
+            <div class="form-group">
+                <h3>Profile Picture</h3>
+                <div class="current-profile-pic">
+                    <img src="<%= user.profileImage %>" alt="Current Profile Picture">
+                </div>
+                <form action="/photos/upload-profile" method="POST" enctype="multipart/form-data">
+                    <label for="newProfileImage" class="submit-btn" style="display: inline-block; width: auto; margin-top: 1rem; cursor: pointer;">Upload New Profile Picture</label>
+                    <input type="file" id="newProfileImage" name="profileImage" style="display: none;" onchange="this.form.submit()">
+                </form>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 2rem 0;">
+
+            <h3>Gallery Images</h3>
+            <div class="gallery-manage-grid">
+                <% if (user.galleryImages && user.galleryImages.length > 0) { %>
+                    <% user.galleryImages.forEach(img => { %>
+                        <div class="gallery-manage-item">
+                            <img src="<%= img %>" alt="Gallery Image">
+                            <form action="/photos/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this photo?');">
+                                <input type="hidden" name="imageUrl" value="<%= img %>">
+                                <button type="submit" class="delete-btn">×</button>
+                            </form>
+                        </div>
+                    <% }) %>
+                <% } %>
+
+                <% if (!user.galleryImages || user.galleryImages.length < 4) { %>
+                <form action="/photos/upload-gallery" method="POST" enctype="multipart/form-data" class="gallery-manage-item upload">
+                     <label for="newGalleryImages" style="cursor: pointer; text-align: center;">
+                        +<br>Add Photo
+                    </label>
+                    <input type="file" id="newGalleryImages" name="galleryImages" style="display: none;" onchange="this.form.submit()" multiple>
+                </form>
+                <% } %>
+            </div>
+
+            <a href="/profile" class="submit-btn" style="text-decoration: none; text-align: center; background: #555; margin-top: 2rem;">Back to Profile</a>
+        </div>
+    </div>
+</body>
+<style>
+    .current-profile-pic img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #eee;
+    }
+    .gallery-manage-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    .gallery-manage-item {
+        position: relative;
+    }
+    .gallery-manage-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .gallery-manage-item .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        font-size: 16px;
+        line-height: 25px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .gallery-manage-item.upload {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 150px;
+        color: #888;
+    }
+</style>
+</html>

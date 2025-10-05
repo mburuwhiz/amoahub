@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 3: Your Personality | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/onboarding.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="progress-bar">
+            <div class="progress-step active">1</div>
+            <div class="progress-step active">2</div>
+            <div class="progress-step active">3</div>
+        </div>
+        <div class="onboarding-card">
+            <h2>Your Personality</h2>
+            <p>Share a little more about yourself to attract the right people.</p>
+
+            <form action="/onboarding/step3" method="POST">
+                <div class="form-group">
+                    <label for="work">Work / Occupation</label>
+                    <input type="text" id="work" name="work" placeholder="e.g., Software Engineer" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Your Bio</label>
+                    <textarea id="bio" name="bio" placeholder="Tell us something interesting about you..." maxlength="500" required></textarea>
+                    <p class="input-note">This is your chance to shine. Be authentic!</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="interests">Your Interests</label>
+                    <input type="text" id="interests" name="interests" placeholder="e.g., Reading, Traveling, Photography">
+                    <p class="input-note">Separate interests with a comma.</p>
+                </div>
+
+                <button type="submit" class="submit-btn">Finish & View Matches</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

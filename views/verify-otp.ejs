@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-branding">
+            <div class="branding-content">
+                <a href="/" class="logo">Amora Hub</a>
+                <h1>Almost there! Just one more step.</h1>
+                <ul>
+                    <li>❤️ Discover authentic people</li>
+                    <li>🛡️ A safe space to connect</li>
+                    <li>✨ Intelligent matchmaking</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="form-wrapper">
+                <h2>Enter Your OTP</h2>
+                <p>Check your email for the 6-digit code we sent you.</p>
+
+                <%- include('partials/_messages') %>
+
+                <form action="/verify-otp" method="POST">
+                    <div class="input-group">
+                        <label for="otp">Verification Code</label>
+                        <input type="text" id="otp" name="otp" required maxlength="6" pattern="\d{6}" title="Enter the 6-digit code from your email.">
+                    </div>
+                    <button type="submit" class="submit-btn">Verify Account</button>
+                </form>
+
+                <div class="separator"></div>
+
+                <form action="/resend-otp" method="POST" style="text-align: center;">
+                     <p>Didn't get a code?</p>
+                    <button type="submit" class="link-btn">Resend OTP</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

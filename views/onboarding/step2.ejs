@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2: Add Photos | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/onboarding.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="progress-bar">
+            <div class="progress-step active">1</div>
+            <div class="progress-step active">2</div>
+            <div class="progress-step">3</div>
+        </div>
+        <div class="onboarding-card">
+            <h2>Add Your Photos</h2>
+            <p>A picture is worth a thousand words. Make a great first impression!</p>
+
+            <form action="/onboarding/step2" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Profile Picture (Required)</label>
+                    <div class="photo-upload-group" onclick="document.getElementById('profileImage').click();">
+                        <label for="profileImage">Click to Upload</label>
+                        <p class="input-note" id="profile-image-filename">This will be your main photo that everyone sees first.</p>
+                        <input type="file" id="profileImage" name="profileImage" accept="image/*" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Gallery Photos (Optional)</label>
+                     <div class="photo-upload-group" onclick="document.getElementById('galleryImages').click();">
+                        <label for="galleryImages">Click to Upload</label>
+                        <p class="input-note" id="gallery-images-filenames">Add up to 4 more photos to show off your personality.</p>
+                        <input type="file" id="galleryImages" name="galleryImages" accept="image/*" multiple>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Continue to Final Step</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Script to show the name of the uploaded files
+        const profileInput = document.getElementById('profileImage');
+        const galleryInput = document.getElementById('galleryImages');
+        const profileFilename = document.getElementById('profile-image-filename');
+        const galleryFilenames = document.getElementById('gallery-images-filenames');
+
+        profileInput.addEventListener('change', () => {
+            if (profileInput.files.length > 0) {
+                profileFilename.textContent = profileInput.files[0].name;
+            }
+        });
+
+        galleryInput.addEventListener('change', () => {
+            if (galleryInput.files.length > 0) {
+                galleryFilenames.textContent = `${galleryInput.files.length} file(s) selected`;
+            }
+        });
+    </script>
+</body>
+</html>

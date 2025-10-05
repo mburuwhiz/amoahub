@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Amora Hub' %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-branding">
+            <div class="branding-content">
+                <a href="/" class="logo">Amora Hub</a>
+                <h1>Begin your journey to a meaningful connection.</h1>
+                <ul>
+                    <li>❤️ Discover authentic people</li>
+                    <li>🛡️ A safe space to connect</li>
+                    <li>✨ Intelligent matchmaking</li>
+                </ul>
+                <div class="testimonial">
+                    <p>"Joining was the best decision I ever made. The quality of people here is just different."</p>
+                    <span>– Jamie L.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="form-wrapper">
+                <h2>Create your account</h2>
+                <p>Already have an account? <a href="/login">Log In</a></p>
+
+                <%- include('partials/_messages') %>
+
+                <div class="social-logins">
+                    <a href="/auth/google" class="social-btn google">
+                        <img src="/img/google-logo.svg" alt="Google logo"> Continue with Google
+                    </a>
+                    <a href="#" class="social-btn apple" title="Apple Login Coming Soon">
+                        <img src="/img/apple-logo.svg" alt="Apple logo"> Continue with Apple
+                    </a>
+                </div>
+                <div class="separator"><span>OR</span></div>
+
+                <form action="/signup" method="POST">
+                    <div class="input-group">
+                        <label for="signup-name">Display Name</label>
+                        <input type="text" id="signup-name" name="displayName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" name="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-phone">Phone Number</label>
+                        <input type="tel" id="signup-phone" name="phoneNumber" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="signup-password" name="password" required>
+                            <button type="button" class="toggle-password" data-target="signup-password">
+                                 <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd"/></svg>
+                                <svg class="eye-slash-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM22.676 12.553a11.249 11.249 0 01-2.631 4.31l-3.099-3.099a5.25 5.25 0 00-6.71-6.71L7.759 4.577a11.217 11.217 0 014.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113z"/><path d="M15.75 12c0 .18-.013.357-.037.53l-1.48-1.48A3.752 3.752 0 0012 10.5c-.18 0-.357.013-.53.037l-1.48-1.48A3.752 3.752 0 0010.5 9a3.75 3.75 0 00-3.75 3.75c0 .18.013.357.037.53l-1.48-1.48A3.752 3.752 0 009 12.001a3.75 3.75 0 003.75 3.75c.18 0 .357-.013.53-.037l1.48-1.48A3.752 3.752 0 0015.75 12z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                     <div class="input-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="signup-confirm-password" name="confirmPassword" required>
+                            <button type="button" class="toggle-password" data-target="signup-confirm-password">
+                                 <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd"/></svg>
+                                <svg class="eye-slash-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM22.676 12.553a11.249 11.249 0 01-2.631 4.31l-3.099-3.099a5.25 5.25 0 00-6.71-6.71L7.759 4.577a11.217 11.217 0 014.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113z"/><path d="M15.75 12c0 .18-.013.357-.037.53l-1.48-1.48A3.752 3.752 0 0012 10.5c-.18 0-.357.013-.53.037l-1.48-1.48A3.752 3.752 0 0010.5 9a3.75 3.75 0 00-3.75 3.75c0 .18.013.357.037.53l-1.48-1.48A3.752 3.752 0 009 12.001a3.75 3.75 0 003.75 3.75c.18 0 .357-.013.53-.037l1.48-1.48A3.752 3.752 0 0015.75 12z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/js/password-toggle.js"></script>
+</body>
+</html>

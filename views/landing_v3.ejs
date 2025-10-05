@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Amora Hub — Meaningful Connections</title>
+  <meta name="description" content="Amora Hub — a safe, elegant dating experience. Genuine conversations, smart matching and verified profiles." />
+  <meta name="theme-color" content="#07142b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      /* New Bright Theme */
+      --primary-color: #e94057;
+      --primary-color-light: #fbebee;
+      --text-dark: #212529;
+      --text-muted: #6c757d;
+      --bg-light: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --border-color: #dee2e6;
+      --max-width: 1200px;
+    }
+
+    /* Basic reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body,#app{height:100%}
+    body{
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+      min-height:100vh;
+    }
+
+    /* canvas background - REMOVED */
+    .bg-canvas{ display: none; }
+
+    /* page container */
+    .page {
+      position:relative;
+      z-index:2;
+      max-width:var(--max-width);
+      margin:0 auto;
+      padding:28px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:36px;
+    }
+
+    /* Header */
+    header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      width:100%;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border-color);
+      padding:10px 16px;
+      border-radius:14px;
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 20px;
+      z-index: 10;
+    }
+
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      text-decoration:none;
+      color: var(--primary-color);
+      font-weight:700;
+      font-size:1.05rem;
+      white-space:nowrap;
+    }
+
+    /* small svg app-icon */
+    .app-icon{
+      width:42px;height:42px;border-radius:10px;
+      display:inline-grid;place-items:center;
+      background: var(--primary-color-light);
+      border:1px solid rgba(233, 64, 87, 0.1);
+    }
+
+    .nav-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .btn {
+      font-weight:600;
+      border-radius:10px;
+      padding:8px 14px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      border: 1px solid transparent;
+      transition: all .2s ease;
+    }
+
+    .btn-ghost{
+      color: var(--text-dark);
+      background:transparent;
+      border:1px solid var(--border-color);
+    }
+    .btn-ghost:hover {
+        background-color: var(--bg-secondary);
+    }
+
+    .btn-primary{
+      background: var(--primary-color);
+      color: #fff;
+      padding:8px 16px;
+      box-shadow: 0 6px 24px rgba(233, 64, 87, 0.2);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 30px rgba(233, 64, 87, 0.3); }
+
+    /* Hero */
+    .hero {
+      display:flex;
+      gap:28px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      padding:28px;
+      border-radius:20px;
+      background: var(--bg-secondary);
+      border:1px solid var(--border-color);
+    }
+
+    .hero-content{
+      flex:1 1 420px;
+      min-width:260px;
+      color: var(--text-muted);
+    }
+
+    .kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background: var(--primary-color-light);
+      color: var(--primary-color);
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:0.9rem;
+      font-weight: 600;
+      margin-bottom:12px;
+      width:max-content;
+    }
+
+    h1.hero-title{
+      font-size:clamp(1.45rem,3.6vw,2.6rem);
+      line-height:1.1;
+      margin-bottom:12px;
+      font-weight:700;
+      letter-spacing:-0.01em;
+      color: var(--text-dark);
+    }
+
+    p.lead{
+      color: var(--text-muted);
+      font-size:1.05rem;
+      margin-bottom:20px;
+    }
+
+    .hero-cta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .stat-row{
+      display:flex;
+      gap:12px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+
+    .stat{
+      background: #fff;
+      border:1px solid var(--border-color);
+      padding:8px 12px;
+      border-radius:12px;
+      font-weight:600;
+      color: var(--text-muted);
+      font-size:0.95rem;
+    }
+
+    /* Mock phone / app preview */
+    .hero-visual{
+      width:320px;
+      min-width:220px;
+      border-radius:24px;
+      padding:18px;
+      background: #fff;
+      border:1px solid var(--border-color);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      position:relative;
+    }
+
+    .phone {
+      width:210px;
+      height:420px;
+      border-radius:28px;
+      background: #e9ecef;
+      border:8px solid #fff;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.1);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .phone .screen {
+      position:absolute;
+      inset:12px;
+      border-radius:14px;
+      background: var(--bg-secondary);
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:10px;
+      padding:12px;
+    }
+
+    /* tiny app badge inside the mock */
+    .mini-card {
+      width:100%;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius:10px;
+    }
+    .mini-card .avatar{
+      width:46px;height:46px;border-radius:10px;background: var(--primary-color);
+      display:inline-grid;place-items:center;color:#fff;font-weight:800;
+      font-size:1rem;
+    }
+    .mini-card .meta{ color: var(--text-dark); font-weight:600; font-size:0.95rem; }
+
+    /* Features */
+    .features {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap:16px;
+      margin-top:6px;
+    }
+
+    .feature {
+      padding:18px;
+      border-radius:14px;
+      background: #fff;
+      border:1px solid var(--border-color);
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .feature .ico {
+      width:56px;height:56px;border-radius:12px;
+      background: var(--primary-color-light);
+      display:inline-grid;place-items:center;color: var(--primary-color);font-weight:700;font-size:1.25rem;
+    }
+    .feature strong {
+        color: var(--text-dark);
+    }
+    .feature .muted {
+        color: var(--text-muted);
+    }
+
+    /* Testimonials */
+    .testimonials {
+      margin-top:6px;
+      display:flex;
+      gap:18px;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .testimonial {
+      max-width:900px;
+      padding:24px;
+      border-radius:14px;
+      background: var(--bg-secondary);
+      border:1px solid var(--border-color);
+      color: var(--text-muted);
+      font-style:italic;
+      transition:opacity .4s ease,transform .35s ease;
+      text-align: center;
+    }
+
+    .testimonial-author {
+      margin-top:12px;
+      color: var(--text-dark);
+      font-weight:700;
+      text-align:center;
+      font-style: normal;
+    }
+
+    /* Footer */
+    footer{
+      margin-top:10px;
+      padding:24px;
+      display:flex;
+      gap:16px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap: wrap;
+      border-top:1px solid var(--border-color);
+    }
+
+    footer .links a{ color: var(--text-muted); text-decoration:none; margin-left:12px; }
+    footer .links a:hover { color: var(--primary-color); }
+    footer small{ color: var(--text-muted); }
+
+    /* Responsive */
+    @media (max-width:980px){
+      .hero{ padding:20px; gap:18px }
+      .hero-visual{ order: -1; width:100%; min-width:0 }
+      .hero-content{ width:100% }
+    }
+
+    @media (max-width:560px){
+      header{ padding:10px; position: static; }
+      .brand{ font-size:1rem }
+      .app-icon{ width:36px;height:36px }
+      .phone{ width:170px; height:340px }
+      .mini-card .avatar{ width:40px; height:40px }
+      .kicker{ font-size:0.85rem; padding:6px 8px }
+      .stat{ font-size:0.9rem }
+      footer { justify-content: center; text-align: center; }
+      footer .links { width: 100%; text-align: center; margin-bottom: 1rem; }
+      footer .links a { margin: 0 8px; }
+    }
+
+    /* small utility - updated */
+    .muted{ color: var(--text-muted) }
+  </style>
+</head>
+<body>
+  <!-- ambient animated canvas -->
+  <canvas class="bg-canvas" id="bgCanvas" aria-hidden="true"></canvas>
+
+  <div class="page" id="app">
+    <header role="banner" aria-label="Amora Hub header">
+      <a href="/" class="brand" aria-label="Amora Hub home">
+        <span class="app-icon" aria-hidden="true">
+          <!-- gold heart SVG -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0" stop-color="#ffd36b"/>
+                <stop offset="1" stop-color="#d4af37"/>
+              </linearGradient>
+            </defs>
+            <path d="M12 21s-7.3-4.6-9.2-6.4C-0.2 10 4.3 4 8.4 6.6 10.1 7.8 12 10 12 10s1.9-2.2 3.6-3.4C19.7 4 24.2 10 21.2 14.6 19.2 16.4 12 21 12 21z" fill="url(#g)"/>
+          </svg>
+        </span>
+        Amora Hub
+      </a>
+
+      <nav class="nav-actions" role="navigation" aria-label="Primary">
+        <a class="btn btn-ghost" href="/login" aria-label="Log in">Log in</a>
+        <a class="btn btn-primary" href="/signup" aria-label="Sign up">Get started</a>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-content">
+        <div class="kicker">Safe · Elegant · Real</div>
+        <h1 id="heroTitle" class="hero-title">Meaningful connections for people who value depth</h1>
+        <p class="lead">Amora Hub blends smart matching with human-first safety — a place made for better conversations and real relationships. Create a profile, verify, and start connecting.</p>
+
+        <div class="hero-cta">
+          <a href="/signup" class="btn btn-primary" aria-label="Sign up for Amora Hub">Create account</a>
+          <a href="#features" class="btn btn-ghost" aria-label="See features">See features</a>
+        </div>
+
+        <div class="stat-row" aria-hidden="true">
+          <div class="stat">Verified profiles</div>
+          <div class="stat">Privacy-first</div>
+          <div class="stat">People like you</div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="phone" role="img" aria-label="App preview">
+          <div class="screen">
+            <div class="mini-card" title="Match preview">
+              <div class="avatar">AH</div>
+              <div class="meta">New match: Jamie · 27</div>
+            </div>
+            <div style="height:10px"></div>
+            <div class="mini-card" title="Conversation preview">
+              <div style="width:52px;height:52px;border-radius:10px;background:rgba(255,255,255,0.02);display:inline-block"></div>
+              <div class="meta">“Loved your hiking photos — what's your favorite trail?”</div>
+            </div>
+            <div style="flex:1"></div>
+            <div style="display:flex;gap:6px;align-items:center;justify-content:space-between;">
+              <small style="color:rgba(255,255,255,0.6)">Amora Hub · Verified</small>
+              <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(180deg,var(--gold),var(--gold-strong));display:inline-grid;place-items:center;color:#07142a;font-weight:700">↑</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" aria-labelledby="featuresHeading">
+      <h2 id="featuresHeading" style="margin-bottom:12px;color:var(--gold);">Why Amora Hub</h2>
+      <div class="features">
+        <div class="feature">
+          <div class="ico">🧠</div>
+          <div>
+            <strong>Smart matching</strong>
+            <div class="muted">Ranking that learns what matters to you — interests, intent and conversation signals.</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="ico">🔒</div>
+          <div>
+            <strong>Verified & private</strong>
+            <div class="muted">Optional verification, strict moderation, and privacy-first data rules.</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="ico">💬</div>
+          <div>
+            <strong>Conversation tools</strong>
+            <div class="muted">Thoughtful prompts, icebreakers, and curated questions to get real conversations started.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials" aria-labelledby="testiHeading">
+      <h3 id="testiHeading" style="color:var(--gold);">Real stories</h3>
+      <div id="testimonialsWrap" class="testimonial" aria-live="polite">
+        <div class="testimonial-text">"I almost gave up on dating apps until I tried Amora Hub — the quality of conversations is different. I met someone who became my partner."</div>
+        <div class="testimonial-author">— Chloe S.</div>
+      </div>
+    </section>
+
+    <footer>
+      <small>&copy; 2025 Amora Hub</small>
+      <div class="links">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* Optional: smooth anchor scroll */
+    (function smoothScroll(){
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          const t = document.querySelector(a.getAttribute('href'));
+          if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

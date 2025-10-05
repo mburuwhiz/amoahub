@@ -1,0 +1,40 @@
+<script>
+    // Make user data available to the client-side script
+    const currentUser = {
+        profileImage: "<%= user.profileImage %>",
+        displayName: "<%= user.displayName %>"
+    };
+</script>
+
+<div class="discover-container">
+    <% if (potentialMatches && potentialMatches.length > 0) { %>
+        <div class="card-stack" id="card-stack">
+            <% potentialMatches.forEach((match, index) => { %>
+                <div class="profile-card" data-id="<%= match._id %>" style="background-image: url('<%= match.profileImage %>'); z-index: <%= index + 1 %>;">
+                    <div class="profile-card-info">
+                        <div>
+                            <h3><%= match.displayName %>, <%= match.age %></h3>
+                            <p><%= match.location %></p>
+                        </div>
+                        <a href="/users/<%= match._id %>" class="view-profile-btn" aria-label="View <%= match.displayName %>'s profile">View Profile</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="discover-actions">
+            <button class="action-btn" id="dislike-btn">❌</button>
+            <button class="action-btn" id="like-btn">💚</button>
+        </div>
+    <% } else { %>
+        <div class="no-more-profiles">
+            <h2>You're All Caught Up!</h2>
+            <p>There are no new profiles matching your criteria right now. Check back later!</p>
+            <a href="/profile/edit" class="btn">Expand Your Filters</a>
+        </div>
+    <% } %>
+</div>
+
+<div id="match-modal" style="display:none;">
+    <!-- Match notification will be injected here by JS -->
+</div>

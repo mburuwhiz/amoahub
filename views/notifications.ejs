@@ -1,0 +1,77 @@
+<div class="notifications-container">
+    <h1>Notifications</h1>
+    <div class="notifications-list">
+        <% if (notifications && notifications.length > 0) { %>
+            <% notifications.forEach(notif => { %>
+                <div class="notification-item <%= !notif.read ? 'unread' : '' %>">
+                    <a href="<%= notif.link || '#' %>">
+                        <div class="notification-content">
+                            <span class="notification-icon">
+                                <% if (notif.type === 'new_match') { %>❤️<% } %>
+                                <% if (notif.type === 'admin_broadcast') { %>📢<% } %>
+                                <% if (notif.type === 'new_message') { %>💬<% } %>
+                            </span>
+                            <p><%= notif.message %></p>
+                        </div>
+                        <span class="notification-timestamp"><%= new Date(notif.createdAt).toLocaleString() %></span>
+                    </a>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="no-notifications">
+                <p>You have no new notifications.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+.notifications-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.notifications-list {
+    margin-top: 1.5rem;
+}
+.notification-item a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: background-color 0.2s ease;
+}
+.notification-item a:hover {
+    background-color: var(--bg-light);
+}
+.notification-item.unread {
+    font-weight: 600;
+    background-color: #fef9c3; /* A soft yellow for unread */
+}
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.notification-icon {
+    font-size: 1.5rem;
+}
+.notification-content p {
+    margin: 0;
+}
+.notification-timestamp {
+    font-size: 0.8rem;
+    color: #666;
+}
+.no-notifications {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+}
+</style>

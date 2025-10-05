@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/onboarding.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="onboarding-container" style="margin-top: 5rem;">
+        <div class="onboarding-card">
+            <h2>Edit Your Profile</h2>
+            <p>Keep your profile fresh and up to date to attract the best matches.</p>
+
+            <%- include('partials/_messages') %>
+
+            <form action="/profile/edit" method="POST">
+                <div class="form-group">
+                    <label for="displayName">Display Name</label>
+                    <input type="text" id="displayName" name="displayName" value="<%= user.displayName %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" value="<%= user.location %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="work">Work / Occupation</label>
+                    <input type="text" id="work" name="work" value="<%= user.work %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="bio">Your Bio</label>
+                    <textarea id="bio" name="bio" required><%= user.bio %></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="interests">Your Interests</label>
+                    <input type="text" id="interests" name="interests" value="<%= user.interests.join(', ') %>">
+                    <p class="input-note">Separate interests with a comma.</p>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 2rem 0;">
+
+                <h4>Update Matching Preferences</h4>
+                 <div class="form-group">
+                    <label for="interestedIn">I am interested in...</label>
+                    <select id="interestedIn" name="interestedIn" required>
+                        <option value="Everyone" <%= user.preferences.gender.includes('Everyone') ? 'selected' : '' %>>Everyone</option>
+                        <option value="Male" <%= user.preferences.gender.includes('Male') ? 'selected' : '' %>>Men</option>
+                        <option value="Female" <%= user.preferences.gender.includes('Female') ? 'selected' : '' %>>Women</option>
+                        <option value="Non-binary" <%= user.preferences.gender.includes('Non-binary') ? 'selected' : '' %>>Non-binary people</option>
+                    </select>
+                </div>
+                 <div class="form-group">
+                    <label for="ageMin">Preferred Age Range</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" id="ageMin" name="ageMin" value="<%= user.preferences.ageRange.min %>" min="18" placeholder="Min" style="width: 45%;">
+                        <span>to</span>
+                        <input type="number" id="ageMax" name="ageMax" value="<%= user.preferences.ageRange.max %>" min="18" placeholder="Max" style="width: 45%;">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Save Changes</button>
+            </form>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 2rem 0;">
+
+            <div class="password-change-section">
+                <h2>Change Your Password</h2>
+                <p>For your security, you will need to enter your current password.</p>
+                <form action="/profile/change-password" method="POST">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<div class="chat-container <% if (activeChat) { %>chat-active<% } %>">
+    <aside class="chat-sidebar">
+        <div class="sidebar-header">
+            <h2>Conversations</h2>
+        </div>
+        <ul class="conversation-list">
+            <% if (conversations && conversations.length > 0) { %>
+                <% conversations.forEach(convo => { %>
+                    <li class="conversation-item <% if (activeChat && activeChat.otherUser._id.toString() === convo._id.toString()) { %>active<% } %>">
+                        <a href="/users/<%= convo._id %>" class="profile-link">
+                            <img src="<%= convo.profileImage %>" alt="<%= convo.displayName %>" class="avatar">
+                        </a>
+                        <div class="convo-info">
+                            <a href="/chats/<%= convo._id %>" class="chat-link">
+                                <span class="convo-name">
+                                    <%= convo.displayName %>
+                                    <% if (convo.isVerified) { %>
+                                        <img src="/img/verified-badge.svg" alt="Verified" class="verified-badge-small">
+                                    <% } %>
+                                </span>
+                                <span class="convo-preview"><%= convo.lastMessage || 'Click to start chatting...' %></span>
+                            </a>
+                        </div>
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <li class="no-conversations">
+                    No conversations yet. Get matching!
+                </li>
+            <% } %>
+        </ul>
+    </aside>
+    <main class="chat-main">
+        <% if (activeChat) { %>
+            <div class="chat-header">
+                <a href="/chats" class="back-to-conversations"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg></a>
+                <h3>
+                    <%= activeChat.otherUser.displayName %>
+                    <% if (activeChat.otherUser.isVerified) { %>
+                        <img src="/img/verified-badge.svg" alt="Verified" class="verified-badge-small">
+                    <% } %>
+                </h3>
+            </div>
+            <div id="message-container" class="message-container">
+                <% if (activeChat.messages && activeChat.messages.length > 0) { %>
+                    <% activeChat.messages.forEach(message => { %>
+                        <div class="message-bubble <%= message.sender._id.toString() === user._id.toString() ? 'sent' : 'received' %>">
+                            <p class="message-content"><%= message.content %></p>
+                            <span class="message-timestamp"><%= new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></span>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="no-messages-yet">No messages yet. Say hello!</p>
+                <% } %>
+            </div>
+            <form id="chat-form" class="chat-form">
+                <input type="hidden" id="conversationId" value="<%= activeChat.conversationId %>">
+                <input type="hidden" id="senderId" value="<%= user._id %>">
+
+                <label for="image-upload" class="upload-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M11.983 1.932a.75.75 0 00-1.248-.032L4.035 12.18a.75.75 0 00-.032 1.248l.032.032 7.948-9.536z" />
+                        <path d="M12.932 2.882a.75.75 0 00-.88-.21l-8.5 2.5a.75.75 0 00.21.88l8.5-2.5a.75.75 0 00.17-.67zM11.932 12.983a.75.75 0 00.21.88l2.5 8.5a.75.75 0 00.88-.21l-2.5-8.5a.75.75 0 00-.67-.17z" />
+                        <path fill-rule="evenodd" d="M11.707 1.293a.75.75 0 00-1.06 0L1.293 10.647a.75.75 0 000 1.06l7.354 7.353a.75.75 0 001.06 0l9.354-9.354a.75.75 0 000-1.06L11.707 1.293zM11 7.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" clip-rule="evenodd" />
+                    </svg>
+                </label>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+
+                <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+        <% } else { %>
+            <div class="chat-welcome">
+                <div class="chat-welcome-content">
+                    <h3>Welcome to your Chats</h3>
+                    <p>Select a conversation from the left to start messaging.</p>
+                </div>
+            </div>
+        <% } %>
+    </main>
+</div>
+
+<style>
+.chat-container { display: flex; height: calc(100vh - 70px); background: #fff; border-top: 1px solid #eee; }
+.chat-sidebar { width: 320px; border-right: 1px solid #eee; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-header { padding: 20px; border-bottom: 1px solid #eee; }
+.sidebar-header h2 { margin: 0; font-size: 22px; }
+.conversation-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
+.conversation-item a { display: flex; align-items: center; padding: 15px 20px; text-decoration: none; color: #333; border-bottom: 1px solid #f0f0f0; }
+.conversation-item a:hover { background: #f9f9f9; }
+.conversation-item.active a { background: #f0f0f8; font-weight: 600; }
+.avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+.convo-info { display: flex; flex-direction: column; overflow: hidden; }
+.convo-name { font-weight: 600; display: flex; align-items: center; }
+.verified-badge-small { width: 16px; height: 16px; margin-left: 5px; flex-shrink: 0; }
+.convo-preview { font-size: 14px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-main { flex-grow: 1; display: flex; flex-direction: column; background-color: #f9f9f9; }
+.chat-welcome { display: flex; justify-content: center; align-items: center; height: 100%; text-align: center; color: #999; }
+.chat-header { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #eee; background: #fff; }
+.chat-header h3 { display: flex; align-items: center; gap: 8px; margin: 0; }
+.back-to-conversations { display: none; margin-right: 15px; color: #333; }
+.message-container { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.message-bubble { max-width: 70%; padding: 10px 15px; border-radius: 18px; line-height: 1.4; }
+.message-bubble.sent { background: linear-gradient(45deg, #6a11cb, #2575fc); color: #fff; align-self: flex-end; }
+.message-bubble.received { background: #fff; color: #333; align-self: flex-start; border: 1px solid #eee; }
+.message-content { margin: 0; }
+.message-timestamp { font-size: 10px; opacity: 0.7; display: block; text-align: right; margin-top: 5px; }
+.chat-form { display: flex; padding: 20px; border-top: 1px solid #eee; background: #fff; }
+#message-input { flex-grow: 1; border: 1px solid #ddd; padding: 12px; border-radius: 20px; }
+#chat-form button { background: #6a11cb; color: #fff; border: none; padding: 0 20px; margin-left: 10px; border-radius: 20px; cursor: pointer; }
+.upload-btn { display: flex; align-items: center; justify-content: center; padding: 0 10px; cursor: pointer; color: #6c757d; }
+.upload-btn:hover { color: #e94057; }
+.upload-btn svg { width: 24px; height: 24px; }
+.message-content img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+.no-messages-yet { text-align: center; color: #999; width: 100%; }
+.no-conversations { padding: 20px; text-align: center; color: #888; }
+
+/* Mobile Layout - Below 768px */
+@media (max-width: 768px) {
+    .chat-container { overflow: hidden; }
+    .chat-sidebar { width: 100%; border-right: none; transition: transform 0.3s ease-in-out; }
+    .chat-main { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: translateX(100%); transition: transform 0.3s ease-in-out; background-color: #f9f9f9; }
+    .chat-container.chat-active .chat-sidebar { transform: translateX(-100%); }
+    .chat-container.chat-active .chat-main { transform: translateX(0); }
+    .back-to-conversations { display: block; }
+    .chat-welcome { display: none; }
+}
+</style>
+
+<% if (activeChat) { %>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const messageContainer = document.getElementById('message-container');
+    const conversationId = document.getElementById('conversationId').value;
+    const senderId = document.getElementById('senderId').value;
+    const imageUploadInput = document.getElementById('image-upload');
+
+    if(chatForm) {
+        // Handle image uploads
+        imageUploadInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('chatImage', file);
+            formData.append('conversationId', conversationId);
+            formData.append('senderId', senderId);
+
+            try {
+                const response = await fetch('/chats/upload-image', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Image upload failed');
+                }
+                // The new message will be appended via the socket 'message' event
+            } catch (err) {
+                console.error('Error uploading image:', err);
+                // Optionally, show an error to the user
+            }
+        });
+
+        socket.emit('joinChat', conversationId);
+        socket.on('message', (message) => appendMessage(message));
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = messageInput.value;
+            if (!content) return;
+            socket.emit('chatMessage', { conversationId, senderId, content });
+            messageInput.value = '';
+            messageInput.focus();
+        });
+
+        function appendMessage(message) {
+            const placeholder = document.querySelector('.no-messages-yet');
+            if(placeholder) placeholder.remove();
+
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message-bubble');
+            const messageSide = message.sender._id.toString() === senderId ? 'sent' : 'received';
+            messageElement.classList.add(messageSide);
+
+            const contentElement = document.createElement('div');
+            contentElement.classList.add('message-content');
+
+            if (message.messageType === 'image') {
+                const image = document.createElement('img');
+                image.src = message.content;
+                image.alt = 'Chat image';
+                contentElement.appendChild(image);
+            } else {
+                const text = document.createElement('p');
+                text.innerText = message.content;
+                contentElement.appendChild(text);
+            }
+
+            const timestampElement = document.createElement('span');
+            timestampElement.classList.add('message-timestamp');
+            timestampElement.innerText = new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            messageElement.appendChild(contentElement);
+            messageElement.appendChild(timestampElement);
+            messageContainer.appendChild(messageElement);
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+</script>
+<% } %>

@@ -1,0 +1,76 @@
+<div class="container mt-4">
+    <h1>Your Matches</h1>
+    <p>These are the people you've mutually liked. Why not start a conversation?</p>
+
+    <% if (matches && matches.length > 0) { %>
+        <div class="matches-grid">
+            <% matches.forEach(match => { %>
+                <div class="match-card">
+                    <a href="/users/<%= match._id %>" class="profile-link">
+                        <img src="<%= match.profileImage %>" alt="<%= match.displayName %>" class="match-card-img">
+                    </a>
+                    <div class="match-card-info">
+                        <a href="/users/<%= match._id %>" class="profile-link">
+                            <h3>
+                                <%= match.displayName %>
+                                <% if (match.isVerified) { %>
+                                    <img src="/img/verified-badge.svg" alt="Verified" class="verified-badge-small">
+                                <% } %>
+                            </h3>
+                            <p><%= match.age %> years old</p>
+                        </a>
+                        <a href="/chats/<%= match._id %>" class="message-btn">Message</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="no-matches">
+            <p>You don't have any matches yet. Keep swiping in the <a href="/discover">Discover</a> section!</p>
+        </div>
+    <% } %>
+</div>
+
+<style>
+.matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.match-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.match-card a {
+    text-decoration: none;
+    color: white;
+}
+.match-card-img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+}
+.match-card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+.match-card-info h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #fff;
+}
+.no-matches {
+    text-align: center;
+    padding: 50px;
+    background: #fff;
+    border-radius: 8px;
+}
+</style>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Display Name | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/onboarding.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="onboarding-card">
+            <h2>Welcome to Amora Hub!</h2>
+            <p>One last step. Please choose a display name for your profile.</p>
+
+            <form action="/onboarding/display-name" method="POST">
+                <div class="form-group">
+                    <label for="displayName">Display Name</label>
+                    <input type="text" id="displayName" name="displayName" required>
+                    <p class="input-note">This is the name that other users will see.</p>
+                </div>
+
+                <button type="submit" class="submit-btn">Save and Continue</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

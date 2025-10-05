@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: Your Details | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/onboarding.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="progress-bar">
+            <div class="progress-step active">1</div>
+            <div class="progress-step">2</div>
+            <div class="progress-step">3</div>
+        </div>
+        <div class="onboarding-card">
+            <h2>Your Core Details</h2>
+            <p>Let's get to know you a bit better. This helps us find your best matches.</p>
+
+            <form action="/onboarding/step1" method="POST">
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required>
+                    <p class="input-note">You must be at least 18 years old to join.</p>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Your Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="" disabled selected>Select your gender...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Non-binary">Non-binary</option>
+                        <option value="Other">I'd rather not say / Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="location">Your Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g., San Francisco, USA" required>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 2rem 0;">
+
+                <h4>Your Matching Preferences</h4>
+
+                <div class="form-group">
+                    <label for="interestedIn">I am interested in...</label>
+                    <select id="interestedIn" name="interestedIn" required>
+                        <option value="Everyone">Everyone</option>
+                        <option value="Male">Men</option>
+                        <option value="Female">Women</option>
+                        <option value="Non-binary">Non-binary people</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ageMin">Preferred Age Range</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" id="ageMin" name="ageMin" value="18" min="18" placeholder="Min" style="width: 45%;">
+                        <span>to</span>
+                        <input type="number" id="ageMax" name="ageMax" value="99" min="18" placeholder="Max" style="width: 45%;">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Continue to Photos</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

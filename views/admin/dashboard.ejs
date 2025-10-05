@@ -1,0 +1,181 @@
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome, <%= user.displayName %>. Manage the Amora Hub platform here.</p>
+    </header>
+
+    <div class="admin-tabs">
+        <a href="#users" class="tab-link active" data-tab="users-panel">User Management</a>
+        <a href="#reports" class="tab-link" data-tab="reports-panel">Pending Reports <span class="count-badge"><%= reports.length %></span></a>
+        <a href="#broadcast" class="tab-link" data-tab="broadcast-panel">Broadcast</a>
+    </div>
+
+    <div class="admin-panels">
+        <!-- User Management Panel -->
+        <div id="users-panel" class="tab-panel active">
+            <div class="card">
+                <h3>All Users (<%= users.length %>)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Verified</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(u => { %>
+                                <tr class="clickable-row" data-href="/users/<%= u._id %>">
+                                    <td>
+                                        <div class="user-cell">
+                                            <img src="<%= u.profileImage || '/img/default-avatar.png' %>" alt="<%= u.displayName %>" class="admin-user-avatar">
+                                            <span><%= u.displayName %></span>
+                                        </div>
+                                    </td>
+                                    <td><%= u.email %></td>
+                                    <td><%= new Date(u.createdAt).toLocaleDateString() %></td>
+                                    <td>
+                                        <span class="status-badge status-<%= u.status %>"><%= u.status %></span>
+                                    </td>
+                                    <td>
+                                        <% if (u.isVerified) { %>
+                                            <span class="status-badge status-verified">Verified</span>
+                                        <% } else { %>
+                                            <span class="status-badge status-unverified">No</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="actions-cell">
+                                        <form action="/admin/users/<%= u._id %>/toggle-verify" method="POST">
+                                            <button type="submit" class="btn-admin btn-small <%= u.isVerified ? 'btn-secondary' : 'btn-success' %>">
+                                                <%= u.isVerified ? 'Un-verify' : 'Verify' %>
+                                            </button>
+                                        </form>
+                                        <form action="/admin/users/<%= u._id %>/toggle-status" method="POST">
+                                            <button type="submit" class="btn-admin btn-small <%= u.status === 'active' ? 'btn-danger' : 'btn-primary' %>">
+                                                <%= u.status === 'active' ? 'Ban' : 'Unban' %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Panel -->
+        <div id="reports-panel" class="tab-panel">
+            <div class="card">
+                <h3>Pending User Reports (<%= reports.length %>)</h3>
+                 <% if (reports.length > 0) { %>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Reported User</th>
+                                    <th>Reporter</th>
+                                    <th>Reason</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% reports.forEach(report => { %>
+                                    <tr>
+                                        <td><%= report.reportedUser.displayName %></td>
+                                        <td><%= report.reporter.displayName %></td>
+                                        <td><%= report.reason %></td>
+                                        <td><%= new Date(report.createdAt).toLocaleDateString() %></td>
+                                        <td class="actions-cell">
+                                            <form action="/admin/reports/<%= report._id %>/dismiss" method="POST">
+                                                <button type="submit" class="btn-admin btn-small btn-secondary">Dismiss</button>
+                                            </form>
+                                            <form action="/admin/users/<%= report.reportedUser._id %>/toggle-status" method="POST">
+                                                <button type="submit" class="btn-admin btn-small btn-danger">Ban User</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p>No pending reports.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Broadcast Panel -->
+        <div id="broadcast-panel" class="tab-panel">
+            <div class="card">
+                <h3>Broadcast a Message</h3>
+                <p>Send a message to all active users. It will appear as a new chat from "Amora Hub Updates".</p>
+                <form action="/admin/broadcast" method="POST" class="admin-form">
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your message here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-admin btn-primary">Send Broadcast</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Tab functionality
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    // Function to switch tabs
+    const switchTab = (targetId) => {
+        tabLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.tab === targetId);
+        });
+        tabPanels.forEach(panel => {
+            panel.classList.toggle('active', panel.id === targetId);
+        });
+    };
+
+    // Handle clicks on tab links
+    tabLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = e.currentTarget.dataset.tab;
+            switchTab(targetId);
+            // Update URL hash without jumping
+            history.pushState(null, '', `#${targetId.replace('-panel', '')}`);
+        });
+    });
+
+    // Check for a hash in the URL on page load
+    const currentHash = window.location.hash.substring(1);
+    if (currentHash) {
+        const targetId = `${currentHash}-panel`;
+        // Check if a panel with this ID exists
+        if (document.getElementById(targetId)) {
+            switchTab(targetId);
+        }
+    }
+
+    // Clickable table rows
+    const clickableRows = document.querySelectorAll('.clickable-row');
+    clickableRows.forEach(row => {
+        row.addEventListener('click', (e) => {
+            // Don't navigate if a button or a form element inside the row was clicked
+            if (e.target.closest('button') || e.target.closest('form')) {
+                return;
+            }
+            const href = row.dataset.href;
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
+});
+</script>
