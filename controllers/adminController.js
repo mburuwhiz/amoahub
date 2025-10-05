@@ -1,0 +1,118 @@
+import User from '../models/User.js';
+import Report from '../models/Report.js';
+import Broadcast from '../models/Broadcast.js';
+import Notification from '../models/Notification.js';
+
+// @desc    Admin Dashboard
+// @route   GET /admin/dashboard
+export const getDashboard = async (req, res) => {
+  try {
+    // Fetch all non-admin users and reports in parallel for efficiency
+    const [users, reports] = await Promise.all([
+      User.find({ role: { $ne: 'admin' } }).sort({ createdAt: -1 }).lean(),
+      Report.find({ status: 'pending' }).populate('reporter reportedUser', 'displayName email').lean()
+    ]);
+
+    res.render('admin/dashboard', {
+      title: 'Admin Dashboard',
+      layout: 'layouts/admin', // A separate layout for the admin panel
+      user: req.user,
+      users: users,
+      reports: reports,
+    });
+  } catch (err) {
+    console.error(err);
+    // res.render('error/500');
+  }
+};
+
+// @desc    Toggle a user's status (ban/unban)
+// @route   POST /admin/users/:id/toggle-status
+export const toggleUserStatus = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            user.status = user.status === 'active' ? 'banned' : 'active';
+            await user.save();
+            // Optional: Add flash message for success
+        }
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/admin/dashboard');
+    }
+};
+
+// @desc    Broadcast a message to all users
+// @route   POST /admin/broadcast
+export const postBroadcast = async (req, res) => {
+    try {
+        const { message } = req.body;
+        if (!message) {
+            req.flash('error_msg', 'Broadcast message cannot be empty.');
+            return res.redirect('/admin/dashboard');
+        }
+
+        // 1. Save the broadcast message
+        const broadcast = new Broadcast({
+            admin: req.user.id,
+            message: message,
+        });
+        await broadcast.save();
+
+        // 2. Find all active users (excluding admins)
+        const usersToNotify = await User.find({ role: 'user', status: 'active' }).select('_id');
+
+        // 3. Create a notification for each user
+        const notifications = usersToNotify.map(user => ({
+            user: user._id,
+            type: 'admin_broadcast',
+            message: `A new announcement from Amora Hub: "${message.substring(0, 50)}..."`,
+            link: `/broadcasts/${broadcast._id}` // Link to view the full broadcast
+        }));
+
+        if (notifications.length > 0) {
+            await Notification.insertMany(notifications);
+        }
+
+        req.flash('success_msg', `Broadcast sent to ${usersToNotify.length} users.`);
+        res.redirect('/admin/dashboard');
+
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Something went wrong while sending the broadcast.');
+        res.redirect('/admin/dashboard');
+    }
+};
+
+// @desc    Dismiss a user report
+// @route   POST /admin/reports/:id/dismiss
+export const dismissReport = async (req, res) => {
+    try {
+        await Report.findByIdAndUpdate(req.params.id, { status: 'dismissed' });
+        req.flash('success_msg', 'Report dismissed.');
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Error dismissing report.');
+        res.redirect('/admin/dashboard');
+    }
+};
+
+// @desc    Toggle a user's verification status
+// @route   POST /admin/users/:id/toggle-verify
+export const toggleUserVerify = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            user.isVerified = !user.isVerified; // Allows toggling off if needed
+            await user.save();
+            req.flash('success_msg', `User ${user.isVerified ? 'verified' : 'un-verified'} successfully.`);
+        }
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Error updating user verification status.');
+        res.redirect('/admin/dashboard');
+    }
+};
