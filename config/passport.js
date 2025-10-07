@@ -52,7 +52,7 @@ export default function (passport) {
           displayName: profile.displayName,
           email: profile.emails[0].value,
           profileImage: { url: profile.photos[0].value.replace('s96-c', 's250-c') },
-          isVerified: true, // Email is verified by Google
+          isVerified: false, // This is for admin verification, not email verification.
           onboardingComplete: false,
         };
 

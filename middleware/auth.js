@@ -1,5 +1,8 @@
 export function ensureAuth(req, res, next) {
   if (req.isAuthenticated()) {
+    if (req.user.status === 'banned' && req.path !== '/banned') {
+        return res.redirect('/banned');
+    }
     return next();
   } else {
     res.redirect('/login');

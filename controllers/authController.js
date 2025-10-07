@@ -148,7 +148,7 @@ export const postVerifyOtp = async (req, res) => {
             return res.redirect('/verify-otp');
         }
 
-        user.isVerified = true;
+        user.isEmailVerified = true;
         user.otp = undefined;
         user.otpExpires = undefined;
         await user.save();
@@ -382,7 +382,7 @@ export const verifyEmail = async (req, res) => {
             return res.redirect('/login');
         }
 
-        user.isVerified = true;
+        user.isEmailVerified = true;
         user.emailVerificationToken = undefined;
         user.emailVerificationExpires = undefined;
         await user.save();

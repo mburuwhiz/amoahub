@@ -34,10 +34,10 @@ export const getChatsPage = async (req, res) => {
 
         const renderData = {
             title: 'Chats',
-            layout: 'layouts/main_v2',
             user: req.user,
             conversations: processedConversations,
-            activeChat: null
+            activeChat: null,
+            pageClass: 'page-chat' // Add a custom class for the body
         };
 
         // 2. If a specific chat is requested, fetch its details

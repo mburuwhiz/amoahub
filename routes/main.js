@@ -1,13 +1,19 @@
 import express from 'express';
+import { getLandingPage, getBannedPage, requestReview } from '../controllers/mainController.js';
+import { ensureAuth } from '../middleware/auth.js';
+
 const router = express.Router();
 
 // @desc    Landing page
 // @route   GET /
-router.get('/', (req, res) => {
-  res.render('landing_v3', {
-    title: 'Welcome to Amora Hub',
-    layout: 'layouts/main'
-  });
-});
+router.get('/', getLandingPage);
+
+// @desc    Banned user page
+// @route   GET /banned
+router.get('/banned', ensureAuth, getBannedPage);
+
+// @desc    Handle review request from banned user
+// @route   POST /request-review
+router.post('/request-review', ensureAuth, requestReview);
 
 export default router;

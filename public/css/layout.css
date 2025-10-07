@@ -130,6 +130,11 @@ body {
     .bottom-nav a i {
         font-size: 20px;
     }
+
+    /* Hide bottom nav when on a page with the .page-chat body class */
+    body.page-chat .bottom-nav {
+        display: none;
+    }
 }
 
 /* --- Image Modal Styles --- */

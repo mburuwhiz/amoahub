@@ -88,6 +88,10 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.mobile-logout-btn {
+    display: none; /* Hidden by default on desktop */
+}
+
 /* Profile Body */
 .profile-body-v2 {
     padding: 1.5rem;
@@ -142,7 +146,41 @@
 }
 
 @media (max-width: 768px) {
+    .profile-container-v2 {
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+    }
+    .profile-card-v2 {
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .profile-header-v2 {
+        height: 200px;
+    }
+    .profile-avatar-v2 {
+        width: 100px;
+        height: 100px;
+    }
+    .profile-name-v2 {
+        font-size: 1.5rem;
+    }
+    .profile-actions-v2 {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+    }
+    .action-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
     .profile-body-v2 {
         grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    .profile-widget-v2 {
+        padding: 1rem;
+    }
+    .mobile-logout-btn {
+        display: flex; /* Show on mobile */
     }
 }

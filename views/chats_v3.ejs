@@ -112,12 +112,14 @@
             messageContainer.scrollTop = messageContainer.scrollHeight;
         }
 
-        // Scroll input into view on mobile when keyboard appears
-        messageInput.addEventListener('focus', () => {
-            if (window.innerWidth <= 768) {
-                setTimeout(() => {
-                    chatForm.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                }, 100); // Small delay to let keyboard animate in
+        // Use the visualViewport API to handle the on-screen keyboard
+        window.visualViewport?.addEventListener('resize', () => {
+            const chatContainer = document.getElementById('chat-container');
+            if (chatContainer) {
+                // Adjust the height of the container to match the new viewport height
+                chatContainer.style.height = `${window.visualViewport.height}px`;
+                // Ensure the input is scrolled into view
+                messageInput.scrollIntoView({ block: 'end' });
             }
         });
 

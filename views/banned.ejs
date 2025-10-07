@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Account Suspended | Amora Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-form-container" style="max-width: 500px;">
+             <div class="form-wrapper">
+                <h2 style="color: #dc3545;">Account Suspended</h2>
+                <p>Your account has been suspended due to a violation of our community guidelines. You no longer have access to the platform.</p>
+
+                <%- include('partials/_messages') %>
+
+                <p>If you believe this was a mistake, you can request a review from our admin team.</p>
+                <form action="/request-review" method="POST">
+                    <button type="submit" class="submit-btn">Request a Review</button>
+                </form>
+                <a href="/logout" style="display: block; margin-top: 1rem;">Logout</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
