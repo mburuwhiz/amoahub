@@ -135,8 +135,8 @@
             /* When the chat is open, it should be above the main nav */
             z-index: 1500;
         }
-        /* Hide the main app's bottom nav when any chat view is active */
-        body:has(.chat-container-v3) .bottom-nav {
+        /* Hide the main app's bottom nav only when a chat is active */
+        body:has(.chat-container-v3.chat-active) .bottom-nav {
             display: none;
         }
     }

@@ -1,5 +1,5 @@
 /*
-  Chat Layout v4: A robust, fixed-positioning approach for mobile-first takeover.
+  Chat Layout v5: Final, robust version with corrected media queries.
 */
 
 /* --- Mobile First Styles (Default) --- */
@@ -39,22 +39,8 @@
     z-index: 1;
 }
 
-.chat-container-v3.chat-active .chat-sidebar-v3 {
-    transform: translateX(-100%);
-}
-
-.chat-container-v3.chat-active .chat-main-v3 {
-    transform: translateX(0);
-    z-index: 3;
-}
-
 /* --- Common Inner Styles --- */
-.sidebar-header-v3, .chat-header-v3 {
-    padding: 1rem;
-    border-bottom: 1px solid #e0e0e0;
-    flex-shrink: 0;
-    background: #fff;
-}
+.sidebar-header-v3, .chat-header-v3 { padding: 1rem; border-bottom: 1px solid #e0e0e0; flex-shrink: 0; background: #fff; }
 .sidebar-header-v3 h2, .chat-header-v3 h3 { margin: 0; font-size: 1.2rem; font-weight: 600; }
 .conversation-list-v3 { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
 .conversation-item-v3 { display: flex; align-items: center; padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
@@ -84,17 +70,32 @@
     .chat-sidebar-v3,
     .chat-main-v3 {
         position: relative;
-        transform: translateX(0);
+        transform: translateX(0); /* Ensure no translation on desktop */
         height: 100%;
     }
 
     .chat-sidebar-v3 {
         width: 33.33%;
-        flex-shrink: 0; /* Prevent the sidebar from shrinking */
         border-right: 1px solid #e0e0e0;
+    }
+
+    .chat-main-v3 {
+        width: 66.67%;
     }
 
     .chat-header-v3 .back-arrow {
         display: none;
+    }
+}
+
+/* --- Mobile-Only Active State --- */
+@media (max-width: 768px) {
+    .chat-container-v3.chat-active .chat-sidebar-v3 {
+        transform: translateX(-100%);
+    }
+
+    .chat-container-v3.chat-active .chat-main-v3 {
+        transform: translateX(0);
+        z-index: 3;
     }
 }
