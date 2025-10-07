@@ -1,20 +1,25 @@
 /*
-  Chat Layout v3: Using fixed positioning to control the layout and avoid parent container issues.
+  Chat Layout v4: A robust, fixed-positioning approach to solve layout conflicts.
 */
 
-/* Main container that fills the viewport area designated for the page content */
+/*
+  On desktop, the chat container is a fixed "window" that occupies the space
+  to the right of the main sidebar, accounting for the parent's padding.
+*/
 .chat-container-v2 {
     display: flex;
     background-color: #fff;
     position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 250px; /* Width of the desktop sidebar */
-    border-left: 1px solid #e0e0e0;
+    top: 20px;
+    bottom: 20px;
+    left: 270px; /* 250px sidebar + 20px padding */
+    right: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-/* Sidebar (Conversation List) */
+/* --- Sidebar (Conversation List) --- */
 .chat-sidebar-v2 {
     width: 35%;
     min-width: 280px;
@@ -41,7 +46,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow-y: auto; /* This makes the list scrollable */
+    overflow-y: auto;
     flex-grow: 1;
 }
 
@@ -68,12 +73,12 @@
 .convo-name-v2 { font-weight: 600; white-space: nowrap; }
 .convo-preview-v2 { font-size: 0.85rem; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Main Chat Area */
+/* --- Main Chat Area --- */
 .chat-main-v2 {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ensure it fills the container height */
+    height: 100%;
     background-color: #f0f2f5;
 }
 
@@ -90,11 +95,10 @@
 .chat-header-v2 a { display: flex; align-items: center; text-decoration: none; color: inherit; }
 .chat-header-v2 h3 { margin: 0; font-size: 1.1rem; font-weight: 600; }
 
-/* Messages */
 .message-container-v2 {
     flex-grow: 1;
     padding: 1rem;
-    overflow-y: auto; /* Makes the message area scrollable */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -105,20 +109,24 @@
 .message-bubble-v2.received { background: #fff; color: #333; align-self: flex-start; border: 1px solid #e9e9e9; }
 .message-bubble-v2 img { max-width: 100%; border-radius: 1rem; margin-top: 5px; }
 
-/* Chat Form */
 .chat-form-v2 { display: flex; align-items: center; padding: 1rem; background-color: #fff; border-top: 1px solid #e0e0e0; flex-shrink: 0; }
 #message-input-v2 { flex-grow: 1; border: 1px solid #ddd; background-color: #f0f2f5; padding: 0.75rem 1rem; border-radius: 1.5rem; outline: none; }
 #chat-form-v2 button { background: transparent; border: none; color: #007bff; font-size: 1.5rem; margin-left: 1rem; cursor: pointer; }
 
-/* Welcome Screen */
 .chat-welcome-v2 { display: flex; justify-content: center; align-items: center; height: 100%; text-align: center; color: #65676b; }
 
 /* --- Mobile Responsive --- */
 @media (max-width: 768px) {
     .chat-container-v2 {
-        left: 0; /* On mobile, the container takes the full width */
+        /* On mobile, it takes up the full screen */
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
         width: 100%;
-        height: 100vh; /* And full height */
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
     }
 
     .chat-sidebar-v2 {

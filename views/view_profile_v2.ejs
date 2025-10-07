@@ -9,7 +9,7 @@
                 <img src="<%= (profile.profileImage && profile.profileImage.url) ? profile.profileImage.url : '/img/default-avatar.png' %>" alt="<%= profile.displayName %>" class="profile-avatar-v2">
                 <h1 class="profile-name-v2">
                     <%= profile.displayName %>, <%= profile.age %>
-                    <% if (profile.isVerified) { %> <i class="fas fa-check-circle" style="color: #007bff;"></i> <% } %>
+                    <% if (profile.isVerified) { %> <img src="/img/verified_badge.svg" alt="Verified" class="verified-badge-icon"> <% } %>
                 </h1>
             </div>
         </div>
