@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title><%= typeof title !== 'undefined' ? title : 'Amora Hub' %></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,5 +42,38 @@
         <a href="/profile"><i class="fas fa-user"></i><span>Profile</span></a>
     </div>
 
+    <!-- The Image Modal -->
+    <div id="image-modal" class="image-modal">
+        <span class="image-modal-close">&times;</span>
+        <img class="image-modal-content" id="modal-image">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            const closeModal = document.querySelector('.image-modal-close');
+
+            document.addEventListener('click', (e) => {
+                // Check if the clicked element is a gallery image
+                if (e.target.matches('.gallery-item-v2 img')) {
+                    modal.style.display = 'block';
+                    modalImg.src = e.target.src;
+                }
+            });
+
+            const close = () => {
+                modal.style.display = 'none';
+            }
+
+            closeModal.addEventListener('click', close);
+            modal.addEventListener('click', (e) => {
+                // Close modal if the background is clicked
+                if (e.target === modal) {
+                    close();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
