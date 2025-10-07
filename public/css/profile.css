@@ -1,0 +1,148 @@
+/* General Profile Styles */
+.profile-container-v2 {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.profile-card-v2 {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Profile Header */
+.profile-header-v2 {
+    position: relative;
+    height: 250px;
+}
+
+.profile-header-v2 .cover-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(4px);
+}
+
+.profile-header-content-v2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.profile-avatar-v2 {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-name-v2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+/* Profile Actions */
+.profile-actions-v2 {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.action-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn.message {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: #fff;
+}
+
+.action-btn.report, .action-btn.block {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Body */
+.profile-body-v2 {
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.profile-widget-v2 {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.profile-widget-v2 h3 {
+    margin-top: 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Details & Interests */
+.details-list-v2 li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+}
+
+.interests-tags-v2 .interest-tag {
+    background: #e9ecef;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+}
+
+/* Gallery */
+.gallery-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+}
+
+.gallery-item-v2 img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.gallery-item-v2 img:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .profile-body-v2 {
+        grid-template-columns: 1fr;
+    }
+}

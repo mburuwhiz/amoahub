@@ -16,11 +16,21 @@ export const viewUserProfile = async (req, res) => {
             return res.redirect('/profile');
         }
 
-        res.render('view_profile', {
+        // Add the viewed user to the current user's recentlyViewed list
+        await User.findByIdAndUpdate(req.user._id, {
+            $addToSet: { recentlyViewed: userToView._id }
+        });
+
+        // Keep the list at a max of 15
+        await User.findByIdAndUpdate(req.user._id, {
+            $push: { recentlyViewed: { $each: [], $slice: -15 } }
+        });
+
+        res.render('view_profile_v2', {
             title: `${userToView.displayName}'s Profile`,
-            layout: 'layouts/main_app',
-            user: req.user, // The logged-in user (for the header, etc.)
-            profile: userToView // The data of the user being viewed
+            layout: 'layouts/main_v2',
+            user: req.user,
+            profile: userToView
         });
 
     } catch (err) {

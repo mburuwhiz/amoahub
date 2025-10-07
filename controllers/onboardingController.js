@@ -96,26 +96,37 @@ export const getStep2 = (req, res) => {
 export const postStep2 = async (req, res) => {
     try {
         const userId = req.user.id;
+
+        // Validation for number of photos
+        if (!req.files || !req.files.profileImage || req.files.profileImage.length < 1) {
+            req.flash('error_msg', 'A profile picture is required.');
+            return res.redirect('/onboarding/step2');
+        }
+        if (!req.files.galleryImages || req.files.galleryImages.length < 2) {
+            req.flash('error_msg', 'Please upload at least two photos to your gallery.');
+            return res.redirect('/onboarding/step2');
+        }
+
         const updates = {};
 
-        // Check for profile picture
-        if (req.files && req.files.profileImage) {
-            updates.profileImage = req.files.profileImage[0].path;
-        }
+        // Format profile picture data
+        updates.profileImage = {
+            url: req.files.profileImage[0].path,
+            public_id: req.files.profileImage[0].filename
+        };
 
-        // Check for gallery photos
-        if (req.files && req.files.galleryImages) {
-            updates.galleryImages = req.files.galleryImages.map(file => file.path);
-        }
+        // Format gallery photos data, assuming model field is 'photos'
+        updates.photos = req.files.galleryImages.map(file => ({
+            url: file.path,
+            public_id: file.filename
+        }));
 
-        if (Object.keys(updates).length > 0) {
-            await User.findByIdAndUpdate(userId, updates);
-        }
+        await User.findByIdAndUpdate(userId, updates);
 
         res.redirect('/onboarding/step3');
     } catch (err) {
-        console.error(err);
-        // Optional: Add flash message for upload error
+        console.error('Onboarding step 2 error:', err);
+        req.flash('error_msg', 'There was an error uploading your photos. Please try again.');
         res.redirect('/onboarding/step2');
     }
 };

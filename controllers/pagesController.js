@@ -12,14 +12,15 @@ import { cloudinary } from '../config/cloudinary.js';
 export const getMatchesPage = async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id).populate('matches').lean();
-    res.render('matches', {
+    res.render('matches_v2', {
       title: 'Your Matches',
-      layout: 'layouts/main_app',
+      layout: 'layouts/main_v2',
       user: currentUser,
       matches: currentUser.matches,
     });
   } catch (err) {
     console.error(err);
+    req.flash('error_msg', 'Could not load your matches.');
     res.redirect('/discover');
   }
 };
@@ -126,9 +127,9 @@ export const getBroadcastPage = async (req, res) => {
 // @desc    Show the profile page
 // @route   GET /profile
 export const getProfilePage = (req, res) => {
-  res.render('profile', {
+  res.render('profile_v2', {
     title: 'Your Profile',
-    layout: 'layouts/main_app',
+    layout: 'layouts/main_v2',
     user: req.user,
   });
 };

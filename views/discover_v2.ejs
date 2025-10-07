@@ -1,0 +1,66 @@
+<% layout('layouts/main_v2') -%>
+
+<link rel="stylesheet" href="/css/discover.css">
+
+<div class="discover-container-v2">
+    <!-- Recently Viewed Section -->
+    <div class="discover-section">
+        <h2>Recently Viewed</h2>
+        <div class="recently-viewed-scroller">
+            <% if (recentlyViewed && recentlyViewed.length > 0) { %>
+                <% recentlyViewed.forEach(user => { %>
+                    <a href="/users/<%= user._id %>" class="user-card-v2" style="min-width: 220px;">
+                        <img src="<%= user.profileImage.url %>" alt="<%= user.displayName %>" class="user-card-photo">
+                        <div class="user-card-info">
+                            <h4 class="user-card-name"><%= user.displayName %>, <%= user.age %></h4>
+                            <p class="user-card-location"><%= user.location %></p>
+                        </div>
+                    </a>
+                <% }) %>
+            <% } else { %>
+                <p>You haven't viewed any profiles yet.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- All People Section -->
+    <div class="discover-section">
+        <h2>All People</h2>
+
+        <!-- Filters -->
+        <div class="filters-container">
+            <form action="/discover" method="GET">
+                <label for="gender">Show me:</label>
+                <select name="gender" id="gender">
+                    <option value="Everyone" <%= (filters.gender === 'Everyone') ? 'selected' : '' %>>Everyone</option>
+                    <option value="Male" <%= (filters.gender === 'Male') ? 'selected' : '' %>>Men</option>
+                    <option value="Female" <%= (filters.gender === 'Female') ? 'selected' : '' %>>Women</option>
+                </select>
+
+                <label for="minAge">Age from:</label>
+                <input type="number" name="minAge" id="minAge" value="<%= filters.minAge %>" min="18" style="width: 80px;">
+
+                <label for="maxAge">to:</label>
+                <input type="number" name="maxAge" id="maxAge" value="<%= filters.maxAge %>" min="18" style="width: 80px;">
+
+                <button type="submit" class="action-btn message" style="border-radius: 4px;">Apply</button>
+            </form>
+        </div>
+
+        <div class="all-people-grid">
+            <% if (allPeople && allPeople.length > 0) { %>
+                <% allPeople.forEach(user => { %>
+                    <a href="/users/<%= user._id %>" class="user-card-v2">
+                        <img src="<%= user.profileImage.url %>" alt="<%= user.displayName %>" class="user-card-photo">
+                        <div class="user-card-info">
+                            <h4 class="user-card-name"><%= user.displayName %>, <%= user.age %></h4>
+                            <p class="user-card-location"><%= user.location %></p>
+                        </div>
+                    </a>
+                <% }) %>
+            <% } else { %>
+                <p>No one matches your current filters. Try expanding your search!</p>
+            <% } %>
+        </div>
+    </div>
+</div>

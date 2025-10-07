@@ -92,6 +92,7 @@ const UserSchema = new mongoose.Schema({
   dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  recentlyViewed: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   passwordResetToken: String,
   passwordResetExpires: Date,
   createdAt: {

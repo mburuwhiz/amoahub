@@ -1,0 +1,101 @@
+/* Discover Page Layout */
+.discover-container-v2 {
+    padding: 1.5rem;
+}
+
+.discover-section {
+    margin-bottom: 2.5rem;
+}
+
+.discover-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Recently Viewed Section */
+.recently-viewed-scroller {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem; /* For scrollbar */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.recently-viewed-scroller::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}
+
+/* All People Section */
+.all-people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+/* User Card Styles */
+.user-card-v2 {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-card-v2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.user-card-photo {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.user-card-info {
+    padding: 1rem;
+}
+
+.user-card-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-card-location {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Filters */
+.filters-container {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.filters-container form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filters-container label {
+    font-weight: 600;
+}
+
+.filters-container select, .filters-container input {
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}

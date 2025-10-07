@@ -216,7 +216,7 @@ export const logout = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    req.flash('success_msg', 'You are logged out.');
+    req.flash('logout_success', 'You are logged out.');
     res.redirect('/');
   });
 };

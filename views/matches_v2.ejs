@@ -1,0 +1,35 @@
+<% layout('layouts/main_v2') -%>
+
+<link rel="stylesheet" href="/css/matches.css">
+<link rel="stylesheet" href="/css/discover.css"> <!-- Re-use discover card styles for consistency -->
+
+<div class="matches-container-v2">
+    <h1>Your Matches</h1>
+    <p>These are the people you've mutually liked. It's time to start a conversation!</p>
+
+    <% if (matches && matches.length > 0) { %>
+        <div class="matches-grid-v2">
+            <% matches.forEach(match => { %>
+                <div class="user-card-v2">
+                    <a href="/users/<%= match._id %>">
+                        <div class="user-card-photo-wrapper">
+                             <img src="<%= match.profileImage.url %>" alt="<%= match.displayName %>" class="user-card-photo">
+                        </div>
+                    </a>
+                    <div class="user-card-info">
+                        <div>
+                            <h4 class="user-card-name"><%= match.displayName %>, <%= match.age %></h4>
+                            <p class="user-card-location"><%= match.location %></p>
+                        </div>
+                        <a href="/chats/<%= match._id %>" class="message-btn-v2">Message</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="no-matches-v2">
+            <h2>No Matches Yet</h2>
+            <p>You haven't matched with anyone yet. Head over to the <a href="/discover">Discover</a> page to find new people!</p>
+        </div>
+    <% } %>
+</div>

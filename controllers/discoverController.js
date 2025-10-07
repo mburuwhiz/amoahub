@@ -1,54 +1,52 @@
 import User from '../models/User.js';
 
-// @desc    Show discovery page with potential matches
+// @desc    Show new discover page with recently viewed and all people
 // @route   GET /discover
 export const getDiscoverPage = async (req, res) => {
-  try {
-    const currentUser = req.user;
+    try {
+        // 1. Fetch recently viewed users
+        const currentUser = await User.findById(req.user._id)
+            .populate({
+                path: 'recentlyViewed',
+                options: { sort: { createdAt: -1 } } // Sort by most recently added
+            })
+            .lean();
 
-    // Users I've already interacted with or are blocked
-    const excludedUsers = [
-      ...currentUser.likes,
-      ...currentUser.dislikes,
-      ...currentUser.blockedUsers,
-      currentUser._id, // Exclude myself
-    ];
+        // 2. Handle filters for "All People"
+        const filters = {
+            gender: req.query.gender || 'Everyone',
+            minAge: req.query.minAge || 18,
+            maxAge: req.query.maxAge || 99,
+        };
 
-    // Build the query
-    const query = {
-      _id: { $nin: excludedUsers }, // Not in the excluded list
-      status: 'active', // Must be an active user
-      role: 'user', // Must not be an admin
-      // onboardingComplete: true, // Temporarily disabled for testing
-      // 'preferences.ageRange.min': { $lte: currentUser.age }, // Temporarily disabled for testing
-      // 'preferences.ageRange.max': { $gte: currentUser.age }, // Temporarily disabled for testing
-      // 'preferences.gender': { $in: [currentUser.gender, 'Everyone'] }, // Temporarily disabled for testing
-      age: {
-        $gte: currentUser.preferences.ageRange.min,
-        $lte: currentUser.preferences.ageRange.max,
-      }, // Their age is within my preference range
-      gender: { $in: currentUser.preferences.gender }, // Their gender is one I'm interested in
-    };
+        // 3. Build the query for "All People"
+        const query = {
+            _id: { $ne: currentUser._id }, // Exclude self
+            status: 'active',
+            role: 'user',
+            age: { $gte: filters.minAge, $lte: filters.maxAge },
+        };
 
-    // Handle 'Everyone' preference for the current user
-    if (currentUser.preferences.gender.includes('Everyone')) {
-        // If I'm interested in everyone, remove the specific gender filter
-        delete query.gender;
+        if (filters.gender !== 'Everyone') {
+            query.gender = filters.gender;
+        }
+
+        // 4. Fetch all people based on filters
+        const allPeople = await User.find(query).lean();
+
+        res.render('discover_v2', {
+            title: 'Discover People',
+            layout: 'layouts/main_v2',
+            user: currentUser,
+            recentlyViewed: currentUser.recentlyViewed,
+            allPeople,
+            filters,
+        });
+    } catch (err) {
+        console.error('Error getting discover page:', err);
+        req.flash('error_msg', 'Could not load the discover page.');
+        res.redirect('/'); // Redirect to a safe page on error
     }
-
-
-    const potentialMatches = await User.find(query).limit(20).lean();
-
-    res.render('discover', {
-      title: 'Discover Matches',
-      layout: 'layouts/main_app', // A new layout for the core app experience
-      user: currentUser,
-      potentialMatches,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
-  }
 };
 
 // @desc    Like a user
