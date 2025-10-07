@@ -1,0 +1,155 @@
+<% layout('layouts/main_v2') -%>
+
+<div id="chat-container" class="chat-container-v2 <% if (activeChat) { %>chat-active<% } %>">
+
+    <!-- Conversation List Sidebar -->
+    <aside class="chat-sidebar-v2">
+        <div class="sidebar-header-v2">
+            <h2>Chats</h2>
+        </div>
+        <ul class="conversation-list-v2">
+            <% if (conversations && conversations.length > 0) { %>
+                <% conversations.forEach(convo => { %>
+                    <li class="conversation-item-v2 <% if (activeChat && activeChat.conversationId.toString() === convo._id.toString()) { %>active<% } %>" onclick="window.location.href='/chats/<%= convo._id %>'">
+                        <img src="<%= convo.otherUser.profileImage.url %>" alt="<%= convo.otherUser.displayName %>" class="avatar-v2">
+                        <div class="convo-info-v2">
+                            <div class="convo-name-v2"><%= convo.otherUser.displayName %></div>
+                            <div class="convo-preview-v2"><%= convo.lastMessage || 'No messages yet' %></div>
+                        </div>
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <li class="no-conversations">No conversations yet.</li>
+            <% } %>
+        </ul>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main-v2">
+        <% if (activeChat) { %>
+            <div class="chat-header-v2">
+                <a href="/chats" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <a href="/users/<%= activeChat.otherUser._id %>">
+                    <img src="<%= activeChat.otherUser.profileImage.url %>" alt="<%= activeChat.otherUser.displayName %>" class="avatar-v2">
+                    <h3>
+                        <%= activeChat.otherUser.displayName %>
+                        <% if (activeChat.otherUser.isVerified) { %>
+                            <i class="fas fa-check-circle" style="color: #007bff;"></i>
+                        <% } %>
+                    </h3>
+                </a>
+            </div>
+
+            <div id="message-container" class="message-container-v2">
+                <% activeChat.messages.forEach(message => { %>
+                    <div class="message-bubble-v2 <%= message.sender.toString() === user._id.toString() ? 'sent' : 'received' %>">
+                        <%= message.content %>
+                    </div>
+                <% }) %>
+            </div>
+
+            <form id="chat-form-v2" class="chat-form-v2">
+                <input type="file" id="image-upload-v2" accept="image/*" style="display: none;">
+                <label for="image-upload-v2" class="upload-btn-v2"><i class="fas fa-paperclip"></i></label>
+                <input type="text" id="message-input-v2" placeholder="Type a message..." autocomplete="off">
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+
+        <% } else { %>
+            <div class="chat-welcome-v2">
+                <div>
+                    <h3>Select a conversation</h3>
+                    <p>Choose from your existing conversations on the left to start chatting.</p>
+                </div>
+            </div>
+        <% } %>
+    </main>
+</div>
+
+<% if (activeChat) { %>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const socket = io();
+        const conversationId = "<%= activeChat.conversationId %>";
+        const senderId = "<%= user._id %>";
+
+        const messageContainer = document.getElementById('message-container');
+        const chatForm = document.getElementById('chat-form-v2');
+        const messageInput = document.getElementById('message-input-v2');
+        const imageUploadInput = document.getElementById('image-upload-v2');
+
+        socket.emit('joinChat', conversationId);
+
+        socket.on('message', (message) => {
+            if (message.conversationId.toString() === conversationId) {
+                appendMessage(message);
+            }
+        });
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = messageInput.value.trim();
+            if (content) {
+                socket.emit('chatMessage', { conversationId, senderId, content });
+                messageInput.value = '';
+            }
+        });
+
+        imageUploadInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('chatImage', file);
+            formData.append('conversationId', conversationId);
+            formData.append('senderId', senderId);
+
+            try {
+                const response = await fetch('/chats/upload-image', {
+                    method: 'POST',
+                    body: formData,
+                });
+                if (!response.ok) {
+                    console.error('Image upload failed');
+                }
+            } catch (err) {
+                console.error('Error uploading image:', err);
+            }
+        });
+
+        function appendMessage(message) {
+            const isSent = message.sender._id.toString() === senderId;
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message-bubble-v2', isSent ? 'sent' : 'received');
+
+            if (message.messageType === 'image' && message.content) {
+                const image = document.createElement('img');
+                image.src = message.content;
+                image.alt = 'Chat Image';
+                messageElement.appendChild(image);
+            } else {
+                messageElement.innerText = message.content;
+            }
+
+            messageContainer.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        scrollToBottom();
+    });
+</script>
+<% } %>
+
+<style>
+    /* This style block ensures the bottom nav is hidden on mobile when in a chat, as requested */
+    @media (max-width: 768px) {
+        .chat-container-v2.chat-active ~ .bottom-nav {
+            display: none;
+        }
+    }
+</style>

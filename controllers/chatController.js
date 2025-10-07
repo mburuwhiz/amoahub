@@ -15,30 +15,29 @@ export const getChatsPage = async (req, res) => {
             .populate({
                 path: 'participants',
                 select: 'displayName profileImage isVerified',
-                match: { _id: { $ne: currentUserId } } // Exclude the current user
+                match: { _id: { $ne: currentUserId } }
             })
             .sort({ updatedAt: -1 })
             .lean();
 
-        // Re-format conversations to be more usable in the template
-        const formattedConversations = conversations.map(convo => {
-            const otherParticipant = convo.participants[0];
+        // Re-format conversations to be more usable in the new template
+        const processedConversations = conversations.map(convo => {
+            if (!convo.participants || convo.participants.length === 0) return null;
             return {
-                _id: otherParticipant._id, // This is the ID for the link
-                displayName: otherParticipant.displayName,
-                profileImage: otherParticipant.profileImage,
-                isVerified: otherParticipant.isVerified,
-                lastMessage: convo.lastMessage, // You might need to add `lastMessage` to your Conversation schema
+                _id: convo.participants[0]._id, // otherUser._id for the link
+                conversationId: convo._id,
+                otherUser: convo.participants[0],
+                lastMessage: convo.lastMessage || 'No messages yet.',
                 updatedAt: convo.updatedAt
             };
-        });
+        }).filter(Boolean); // Filter out any null entries
 
         const renderData = {
             title: 'Chats',
-            layout: 'layouts/main_app',
+            layout: 'layouts/main_v2',
             user: req.user,
-            conversations: formattedConversations,
-            activeChat: null // Initialize as null
+            conversations: processedConversations,
+            activeChat: null
         };
 
         // 2. If a specific chat is requested, fetch its details
@@ -54,9 +53,8 @@ export const getChatsPage = async (req, res) => {
             });
 
             if (!conversation) {
-                conversation = await Conversation.create({
-                    participants: [currentUserId, otherUserId]
-                });
+                conversation = new Conversation({ participants: [currentUserId, otherUserId] });
+                await conversation.save();
             }
 
             const messages = await Message.find({ conversationId: conversation._id })
@@ -72,7 +70,7 @@ export const getChatsPage = async (req, res) => {
             };
         }
 
-        res.render('chats', renderData);
+        res.render('chats_v2', renderData);
 
     } catch (err) {
         console.error(err);

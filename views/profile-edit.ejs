@@ -86,7 +86,39 @@
                     <button type="submit" class="submit-btn">Update Password</button>
                 </form>
             </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 2rem 0;">
+
+            <div class="delete-account-section">
+                <h2>Delete Your Account</h2>
+                <p>This action is irreversible. All your data, including your profile, messages, and photos, will be permanently deleted.</p>
+                <button id="delete-account-btn" class="submit-btn delete-btn">Delete My Account</button>
+            </div>
+
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('delete-account-btn').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If confirmed, submit a form to the delete route
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/profile/delete';
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            })
+        });
+    </script>
 </body>
 </html>

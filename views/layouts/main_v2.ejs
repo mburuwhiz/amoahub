@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Amora Hub' %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/desktop.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <a href="/">Amora Hub</a>
+        </div>
+        <ul>
+            <li><a href="/hookup"><i class="fas fa-link"></i> Hookup</a></li>
+            <li><a href="/matches"><i class="fas fa-heart"></i> Matches</a></li>
+            <li><a href="/chats"><i class="fas fa-comments"></i> Chats</a></li>
+            <li><a href="/profile"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <%- include('../partials/_messages') %>
+        <%- body %>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <div class="bottom-nav">
+        <a href="/hookup"><i class="fas fa-link"></i><span>Hookup</span></a>
+        <a href="/matches"><i class="fas fa-heart"></i><span>Matches</span></a>
+        <a href="/chats"><i class="fas fa-comments"></i><span>Chats</span></a>
+        <a href="/profile"><i class="fas fa-user"></i><span>Profile</span></a>
+    </div>
+
+</body>
+</html>

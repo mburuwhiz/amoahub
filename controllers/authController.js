@@ -16,7 +16,12 @@ export const getSignup = (req, res) => {
 // @route   POST /signup
 export const postSignup = async (req, res, next) => {
   try {
-    const { displayName, email, phoneNumber, password, confirmPassword } = req.body;
+    const { displayName, email, phoneNumber, password, confirmPassword, terms } = req.body;
+
+    if (!terms) {
+        req.flash('error_msg', 'You must accept the Terms of Service and Privacy Policy.');
+        return res.redirect('/signup');
+    }
 
     if (password !== confirmPassword) {
       req.flash('error_msg', 'Passwords do not match.');

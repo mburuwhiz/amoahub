@@ -1,0 +1,35 @@
+/* Mobile-specific styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.bottom-nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 12px;
+    text-align: center;
+}
+
+.bottom-nav a.active {
+    color: #007bff;
+}
+
+.bottom-nav a i {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 5px;
+}

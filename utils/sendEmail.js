@@ -1,39 +1,39 @@
-import nodemailer from 'nodemailer';
-import ejs from 'ejs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import fetch from 'node-fetch';
 
 const sendEmail = async (options) => {
-    // 1. Create a transporter
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        auth: {
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASSWORD,
-        },
+  const { to, subject, template, data } = options;
+  const url = process.env.EMAIL_SERVICE_URL;
+  const apiKey = process.env.EMAIL_SERVICE_API_KEY;
+
+  const body = {
+    to,
+    subject,
+    template,
+    context: data, // The microservice might expect 'context' instead of 'data'
+  };
+
+  try {
+    const response = await fetch(`${url}/send`, { // Assuming the endpoint is /send
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey, // Using x-api-key as a common practice for API keys
+      },
+      body: JSON.stringify(body),
     });
 
-    // 2. Render the email template
-    const emailHtml = await ejs.renderFile(
-        path.join(__dirname, `../views/emails/${options.template}.ejs`),
-        options.data
-    );
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Email service failed with status ${response.status}: ${errorData}`);
+    }
 
-    // 3. Define the email options
-    const mailOptions = {
-        from: `Amora Hub <${process.env.EMAIL_FROM}>`,
-        to: options.to,
-        subject: options.subject,
-        html: emailHtml,
-        text: options.message, // For email clients that don't support HTML
-    };
+    console.log('Email sent successfully via microservice.');
+    return await response.json();
 
-    // 4. Actually send the email
-    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending email via microservice:', error);
+    throw error; // Re-throw to be handled by the caller
+  }
 };
 
 export default sendEmail;

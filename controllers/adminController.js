@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import Report from '../models/Report.js';
 import Broadcast from '../models/Broadcast.js';
 import Notification from '../models/Notification.js';
+import sendEmail from '../utils/sendEmail.js';
 
 // @desc    Admin Dashboard
 // @route   GET /admin/dashboard
@@ -34,11 +35,28 @@ export const toggleUserStatus = async (req, res) => {
         if (user) {
             user.status = user.status === 'active' ? 'banned' : 'active';
             await user.save();
-            // Optional: Add flash message for success
+
+            const subject = user.status === 'banned' ? 'Your Account Has Been Banned' : 'Your Account Has Been Reinstated';
+            const template = user.status === 'banned' ? 'userBanned' : 'userUnbanned';
+
+            try {
+                await sendEmail({
+                    to: user.email,
+                    subject: subject,
+                    template: template,
+                    data: {
+                        name: user.displayName,
+                    },
+                });
+            } catch (emailErr) {
+                console.error(`Failed to send user ${user.status} email:`, emailErr);
+            }
+            req.flash('success_msg', `User has been ${user.status}.`);
         }
         res.redirect('/admin/dashboard');
     } catch (err) {
         console.error(err);
+        req.flash('error_msg', 'Error updating user status.');
         res.redirect('/admin/dashboard');
     }
 };
@@ -53,26 +71,40 @@ export const postBroadcast = async (req, res) => {
             return res.redirect('/admin/dashboard');
         }
 
-        // 1. Save the broadcast message
         const broadcast = new Broadcast({
             admin: req.user.id,
             message: message,
         });
         await broadcast.save();
 
-        // 2. Find all active users (excluding admins)
-        const usersToNotify = await User.find({ role: 'user', status: 'active' }).select('_id');
+        const usersToNotify = await User.find({ role: 'user', status: 'active' });
 
-        // 3. Create a notification for each user
         const notifications = usersToNotify.map(user => ({
             user: user._id,
             type: 'admin_broadcast',
             message: `A new announcement from Amora Hub: "${message.substring(0, 50)}..."`,
-            link: `/broadcasts/${broadcast._id}` // Link to view the full broadcast
+            link: `/broadcasts/${broadcast._id}`
         }));
 
         if (notifications.length > 0) {
             await Notification.insertMany(notifications);
+        }
+
+        // Send email to all users
+        for (const user of usersToNotify) {
+            try {
+                await sendEmail({
+                    to: user.email,
+                    subject: 'New Announcement from Amora Hub',
+                    template: 'broadcast',
+                    data: {
+                        name: user.displayName,
+                        message: message,
+                    },
+                });
+            } catch (emailErr) {
+                console.error(`Failed to send broadcast email to ${user.email}:`, emailErr);
+            }
         }
 
         req.flash('success_msg', `Broadcast sent to ${usersToNotify.length} users.`);
@@ -107,6 +139,23 @@ export const toggleUserVerify = async (req, res) => {
         if (user) {
             user.isVerified = !user.isVerified; // Allows toggling off if needed
             await user.save();
+
+            if (user.isVerified) {
+                try {
+                    await sendEmail({
+                        to: user.email,
+                        subject: 'You are now verified!',
+                        template: 'userVerified',
+                        data: {
+                            name: user.displayName,
+                        },
+                    });
+                } catch (emailErr) {
+                    console.error('Failed to send verification email:', emailErr);
+                    // Non-critical error, so we don't show an error to the admin
+                }
+            }
+
             req.flash('success_msg', `User ${user.isVerified ? 'verified' : 'un-verified'} successfully.`);
         }
         res.redirect('/admin/dashboard');

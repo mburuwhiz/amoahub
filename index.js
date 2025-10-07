@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressEjsLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.set('layout', 'layouts/main');
+app.set('layout', 'layouts/main_v2');
 
 
 // Session middleware
@@ -73,6 +73,9 @@ app.use((req, res, next) => {
   res.locals.error = req.flash('error'); // For passport login failures
   next();
 });
+
+// Make io accessible to our router
+app.set('io', io);
 
 // Passport middleware
 app.use(passport.initialize());

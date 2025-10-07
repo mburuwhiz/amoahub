@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deleted</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { width: 90%; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .header { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 20px; }
+        .content p { margin-bottom: 15px; }
+        .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Your Amora Hub Account Has Been Deleted
+        </div>
+        <div class="content">
+            <p>Hello <%= name %>,</p>
+            <p>This email is to confirm that your account and all associated data have been permanently deleted from Amora Hub, as you requested.</p>
+            <p>We're sorry to see you go. If you change your mind, you are always welcome to create a new account.</p>
+            <p>Thank you for being a part of our community.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; <%= new Date().getFullYear() %> Amora Hub. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

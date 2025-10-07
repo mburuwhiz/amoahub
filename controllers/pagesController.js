@@ -1,6 +1,11 @@
 import User from '../models/User.js';
 import Notification from '../models/Notification.js';
 import Broadcast from '../models/Broadcast.js';
+import Conversation from '../models/Conversation.js';
+import Message from '../models/Message.js';
+import Report from '../models/Report.js';
+import sendEmail from '../utils/sendEmail.js';
+import { cloudinary } from '../config/cloudinary.js';
 
 // @desc    Show the matches page
 // @route   GET /matches
@@ -16,6 +21,81 @@ export const getMatchesPage = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.redirect('/discover');
+  }
+};
+
+// @desc    Delete user account and all associated data
+// @route   POST /profile/delete
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      req.flash('error_msg', 'User not found.');
+      return res.redirect('/profile/edit');
+    }
+
+    // --- Data Deletion ---
+
+    // 1. Delete user's photos from Cloudinary
+    if (user.photos && user.photos.length > 0) {
+      const publicIds = user.photos.map(photo => photo.public_id).filter(id => id);
+      if (publicIds.length > 0) {
+        await cloudinary.api.delete_resources(publicIds);
+      }
+    }
+    if (user.profileImage && user.profileImage.public_id) {
+      await cloudinary.uploader.destroy(user.profileImage.public_id);
+    }
+
+    // 2. Delete user's messages
+    await Message.deleteMany({ sender: userId });
+
+    // 3. Delete user's conversations
+    await Conversation.deleteMany({ participants: userId });
+
+    // 4. Delete user's reports (both made by and against them)
+    await Report.deleteMany({ $or: [{ reporter: userId }, { reportedUser: userId }] });
+
+    // 5. Delete user's notifications
+    await Notification.deleteMany({ user: userId });
+
+    // 6. Delete the user document itself
+    const deletedUserEmail = user.email;
+    const deletedUserDisplayName = user.displayName;
+    await User.findByIdAndDelete(userId);
+
+    // --- Final Steps ---
+
+    // 7. Send confirmation email
+    try {
+      await sendEmail({
+        to: deletedUserEmail,
+        subject: 'Your Amora Hub Account Has Been Deleted',
+        template: 'accountDeleted',
+        data: {
+          name: deletedUserDisplayName,
+        },
+      });
+    } catch (emailErr) {
+      console.error('Failed to send account deletion email:', emailErr);
+    }
+
+    // 8. Logout and redirect
+    req.logout((err) => {
+      if (err) {
+        console.error('Logout error after account deletion:', err);
+        return res.redirect('/');
+      }
+      req.flash('success_msg', 'Your account has been permanently deleted.');
+      res.redirect('/');
+    });
+
+  } catch (err) {
+    console.error('Error during account deletion:', err);
+    req.flash('error_msg', 'Something went wrong while deleting your account. Please contact support.');
+    res.redirect('/profile/edit');
   }
 };
 
