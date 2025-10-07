@@ -1,0 +1,78 @@
+/* Notifications Page Container */
+.notifications-container-v2 {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.notifications-container-v2 h1 {
+    margin-top: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Notifications List */
+.notifications-list-v2 {
+    margin-top: 1.5rem;
+    list-style: none;
+    padding: 0;
+}
+
+.notification-item-v2 {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.notification-item-v2:last-child {
+    border-bottom: none;
+}
+
+.notification-item-v2 a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.notification-item-v2 a:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item-v2.unread a {
+    background-color: #e9f5ff; /* A soft blue for unread */
+}
+
+.notification-content-v2 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-icon-v2 {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.notification-message-v2 {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.notification-timestamp-v2 {
+    font-size: 0.85rem;
+    color: #6c757d;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
+
+/* No Notifications Message */
+.no-notifications-v2 {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+}
