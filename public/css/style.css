@@ -125,3 +125,38 @@ p {
 .auth-form a:hover {
     text-decoration: underline;
 }
+
+/* Flash Messages */
+.flash-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 9999;
+    opacity: 0;
+    animation: fadeInDown 0.5s forwards;
+}
+
+@keyframes fadeInDown {
+    from {
+        top: -50px;
+        opacity: 0;
+    }
+    to {
+        top: 20px;
+        opacity: 1;
+    }
+}
+
+.flash-message.success {
+    background: linear-gradient(45deg, #28a745, #218838);
+}
+
+.flash-message.error {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+}

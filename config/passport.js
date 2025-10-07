@@ -49,12 +49,11 @@ export default function (passport) {
       async (accessToken, refreshToken, profile, done) => {
         const newUser = {
           googleId: profile.id,
-          // We will ask for displayName in the next step
-          displayName: '',
+          displayName: profile.displayName,
           email: profile.emails[0].value,
-          profileImage: profile.photos[0].value.replace('s96-c', 's250-c'), // Get higher res image
-          isVerified: false, // All users must be manually verified by an admin
-          onboardingComplete: false, // New users must go through onboarding
+          profileImage: { url: profile.photos[0].value.replace('s96-c', 's250-c') },
+          isVerified: true, // Email is verified by Google
+          onboardingComplete: false,
         };
 
         try {

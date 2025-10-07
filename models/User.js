@@ -24,12 +24,15 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   profileImage: {
-    type: String,
-    default: '/img/default-avatar.png',
+    url: { type: String, default: '/img/default-avatar.png' },
+    public_id: { type: String },
   },
-  galleryImages: {
-    type: [String],
-  },
+  photos: [
+    {
+      url: { type: String },
+      public_id: { type: String },
+    }
+  ],
   dob: {
     type: Date,
   },
