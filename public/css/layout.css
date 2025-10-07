@@ -1,0 +1,105 @@
+/* Base Body Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* --- Desktop Layout (Visible on screens > 768px) --- */
+@media (min-width: 769px) {
+    .sidebar {
+        width: 250px;
+        background-color: #fff;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .sidebar .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar ul li {
+        margin-bottom: 15px;
+    }
+
+    .sidebar ul li a {
+        text-decoration: none;
+        color: #333;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar ul li a.active {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        width: calc(100% - 250px);
+    }
+
+    /* Hide mobile nav on desktop */
+    .bottom-nav {
+        display: none;
+    }
+}
+
+/* --- Mobile Layout (Visible on screens <= 768px) --- */
+@media (max-width: 768px) {
+    /* Hide desktop sidebar on mobile */
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        padding: 1rem;
+        padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .bottom-nav a {
+        color: #333;
+        text-decoration: none;
+        font-size: 12px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .bottom-nav a.active {
+        color: #007bff;
+    }
+
+    .bottom-nav a i {
+        font-size: 20px;
+    }
+}

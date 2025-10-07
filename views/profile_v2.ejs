@@ -4,9 +4,9 @@
     <div class="profile-card-v2">
         <!-- Profile Header -->
         <div class="profile-header-v2">
-            <img src="<%= user.photos && user.photos.length > 0 ? user.photos[0].url : '/img/default-cover.jpg' %>" alt="Cover Photo" class="cover-photo">
+            <img src="<%= (user.photos && user.photos.length > 0) ? user.photos[0].url : '/img/default-cover.jpg' %>" alt="Cover Photo" class="cover-photo">
             <div class="profile-header-content-v2">
-                <img src="<%= user.profileImage.url %>" alt="<%= user.displayName %>" class="profile-avatar-v2">
+                <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="<%= user.displayName %>" class="profile-avatar-v2">
                 <h1 class="profile-name-v2">
                     <%= user.displayName %>, <%= user.age %>
                     <% if (user.isVerified) { %> <i class="fas fa-check-circle" style="color: #007bff;"></i> <% } %>

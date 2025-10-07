@@ -11,7 +11,7 @@
                 <div class="user-card-v2">
                     <a href="/users/<%= match._id %>">
                         <div class="user-card-photo-wrapper">
-                             <img src="<%= match.profileImage.url %>" alt="<%= match.displayName %>" class="user-card-photo">
+                             <img src="<%= (match.profileImage && match.profileImage.url) ? match.profileImage.url : '/img/default-avatar.png' %>" alt="<%= match.displayName %>" class="user-card-photo">
                         </div>
                     </a>
                     <div class="user-card-info">

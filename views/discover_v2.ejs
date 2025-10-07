@@ -8,7 +8,7 @@
             <% if (recentlyViewed && recentlyViewed.length > 0) { %>
                 <% recentlyViewed.forEach(user => { %>
                     <a href="/users/<%= user._id %>" class="user-card-v2" style="min-width: 220px;">
-                        <img src="<%= user.profileImage.url %>" alt="<%= user.displayName %>" class="user-card-photo">
+                        <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="<%= user.displayName %>" class="user-card-photo">
                         <div class="user-card-info">
                             <h4 class="user-card-name"><%= user.displayName %>, <%= user.age %></h4>
                             <p class="user-card-location"><%= user.location %></p>
@@ -49,7 +49,7 @@
             <% if (allPeople && allPeople.length > 0) { %>
                 <% allPeople.forEach(user => { %>
                     <a href="/users/<%= user._id %>" class="user-card-v2">
-                        <img src="<%= user.profileImage.url %>" alt="<%= user.displayName %>" class="user-card-photo">
+                        <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="<%= user.displayName %>" class="user-card-photo">
                         <div class="user-card-info">
                             <h4 class="user-card-name"><%= user.displayName %>, <%= user.age %></h4>
                             <p class="user-card-location"><%= user.location %></p>
