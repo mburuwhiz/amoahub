@@ -21,44 +21,90 @@
         </div>
     </div>
 
-    <!-- All People Section -->
+    <!-- Potential Matches Section -->
     <div class="discover-section">
-        <h2>All People</h2>
-
-        <!-- Filters -->
-        <div class="filters-container">
-            <form action="/discover" method="GET">
-                <label for="gender">Show me:</label>
-                <select name="gender" id="gender">
-                    <option value="Everyone" <%= (filters.gender === 'Everyone') ? 'selected' : '' %>>Everyone</option>
-                    <option value="Male" <%= (filters.gender === 'Male') ? 'selected' : '' %>>Men</option>
-                    <option value="Female" <%= (filters.gender === 'Female') ? 'selected' : '' %>>Women</option>
-                </select>
-
-                <label for="minAge">Age from:</label>
-                <input type="number" name="minAge" id="minAge" value="<%= filters.minAge %>" min="18" style="width: 80px;">
-
-                <label for="maxAge">to:</label>
-                <input type="number" name="maxAge" id="maxAge" value="<%= filters.maxAge %>" min="18" style="width: 80px;">
-
-                <button type="submit" class="action-btn message" style="border-radius: 4px;">Apply</button>
-            </form>
-        </div>
+        <h2>Potential Matches</h2>
 
         <div class="all-people-grid">
-            <% if (allPeople && allPeople.length > 0) { %>
-                <% allPeople.forEach(user => { %>
-                    <a href="/users/<%= user._id %>" class="user-card-v2">
-                        <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="<%= user.displayName %>" class="user-card-photo">
+            <% if (potentialMatches && potentialMatches.length > 0) { %>
+                <% potentialMatches.forEach(user => { %>
+                    <div class="user-card-v2" data-user-id="<%= user._id %>">
+                        <a href="/users/<%= user._id %>">
+                            <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="<%= user.displayName %>" class="user-card-photo">
+                        </a>
                         <div class="user-card-info">
-                            <h4 class="user-card-name"><%= user.displayName %>, <%= user.age %></h4>
-                            <p class="user-card-location"><%= user.location %></p>
+                            <a href="/users/<%= user._id %>" class="user-card-link">
+                                <h4 class="user-card-name"><%= user.displayName %>, <%= user.age %></h4>
+                                <p class="user-card-location"><%= user.location %></p>
+                            </a>
+                            <div class="user-card-actions">
+                                <button class="action-btn dislike-btn"><i class="fas fa-times"></i></button>
+                                <button class="action-btn like-btn"><i class="fas fa-heart"></i></button>
+                            </div>
                         </div>
-                    </a>
+                    </div>
                 <% }) %>
             <% } else { %>
-                <p>No one matches your current filters. Try expanding your search!</p>
+                <p>No new potential matches right now. Check back later!</p>
             <% } %>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const discoverGrid = document.querySelector('.all-people-grid');
+
+    discoverGrid.addEventListener('click', async (e) => {
+        const button = e.target.closest('.action-btn');
+        if (!button) return;
+
+        const card = button.closest('.user-card-v2');
+        const userId = card.dataset.userId;
+        const isLike = button.classList.contains('like-btn');
+        const url = isLike ? `/discover/like/${userId}` : `/discover/dislike/${userId}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error('Server error');
+            }
+
+            const result = await response.json();
+
+            // Animate out and remove the card
+            card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            card.style.transform = 'scale(0.9)';
+            card.style.opacity = '0';
+            setTimeout(() => card.remove(), 300);
+
+            // Show match notification if it's a match
+            if (result.match) {
+                Swal.fire({
+                    title: 'It\'s a Match!',
+                    text: `You and ${result.targetUser.displayName} have liked each other.`,
+                    imageUrl: result.targetUser.profileImage.url,
+                    imageWidth: 150,
+                    imageHeight: 150,
+                    imageAlt: result.targetUser.displayName,
+                    confirmButtonText: 'Start a Conversation',
+                    showCancelButton: true,
+                    cancelButtonText: 'Keep Browsing'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/chats/${result.targetUser._id}`;
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Action failed:', err);
+            // Optionally show an error to the user
+        }
+    });
+});
+</script>

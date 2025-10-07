@@ -1,51 +1,57 @@
 import User from '../models/User.js';
 
-// @desc    Show new discover page with recently viewed and all people
+// @desc    Show new discover page with recently viewed and potential matches
 // @route   GET /discover
 export const getDiscoverPage = async (req, res) => {
     try {
-        // 1. Fetch recently viewed users
+        // 1. Fetch current user with populated recentlyViewed list
         const currentUser = await User.findById(req.user._id)
             .populate({
                 path: 'recentlyViewed',
-                options: { sort: { createdAt: -1 } } // Sort by most recently added
+                options: { sort: { createdAt: -1 } }
             })
             .lean();
 
-        // 2. Handle filters for "All People"
-        const filters = {
-            gender: req.query.gender || 'Everyone',
-            minAge: req.query.minAge || 18,
-            maxAge: req.query.maxAge || 99,
-        };
+        // 2. Define users to exclude from matching
+        const excludedUsers = [
+            currentUser._id,
+            ...currentUser.likes,
+            ...currentUser.dislikes,
+            ...currentUser.blockedUsers,
+            ...currentUser.recentlyViewed.map(u => u._id)
+        ];
 
-        // 3. Build the query for "All People"
+        // 3. Build the query for potential matches based on user's preferences
         const query = {
-            _id: { $ne: currentUser._id }, // Exclude self
+            _id: { $nin: excludedUsers },
             status: 'active',
             role: 'user',
-            age: { $gte: filters.minAge, $lte: filters.maxAge },
+            age: {
+                $gte: currentUser.preferences.ageRange.min,
+                $lte: currentUser.preferences.ageRange.max
+            },
         };
 
-        if (filters.gender !== 'Everyone') {
-            query.gender = filters.gender;
+        // Handle gender preference
+        if (!currentUser.preferences.gender.includes('Everyone')) {
+            query.gender = { $in: currentUser.preferences.gender };
         }
 
-        // 4. Fetch all people based on filters
-        const allPeople = await User.find(query).lean();
+        // 4. Fetch potential matches
+        const potentialMatches = await User.find(query).limit(20).lean();
 
+        // 5. Render the page
         res.render('discover_v2', {
             title: 'Discover People',
-            layout: 'layouts/main_v2',
             user: currentUser,
             recentlyViewed: currentUser.recentlyViewed,
-            allPeople,
-            filters,
+            potentialMatches,
         });
+
     } catch (err) {
         console.error('Error getting discover page:', err);
         req.flash('error_msg', 'Could not load the discover page.');
-        res.redirect('/'); // Redirect to a safe page on error
+        res.redirect('/');
     }
 };
 

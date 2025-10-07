@@ -75,6 +75,43 @@
     margin-top: 0.25rem;
 }
 
+.user-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.user-card-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+}
+
+.user-card-actions .action-btn {
+    background-color: #f0f2f5;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-card-actions .action-btn:hover {
+    transform: scale(1.1);
+}
+
+.user-card-actions .like-btn {
+    color: #28a745;
+}
+
+.user-card-actions .dislike-btn {
+    color: #dc3545;
+}
+
 /* Filters */
 .filters-container {
     margin-bottom: 1.5rem;
