@@ -21,13 +21,13 @@
         </div>
     </div>
 
-    <!-- Potential Matches Section -->
+    <!-- All People Section -->
     <div class="discover-section">
-        <h2>Potential Matches</h2>
+        <h2>All People</h2>
 
         <div class="all-people-grid">
-            <% if (potentialMatches && potentialMatches.length > 0) { %>
-                <% potentialMatches.forEach(user => { %>
+            <% if (allPeople && allPeople.length > 0) { %>
+                <% allPeople.forEach(user => { %>
                     <div class="user-card-v2" data-user-id="<%= user._id %>">
                         <a href="/users/<%= user._id %>">
                             <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="<%= user.displayName %>" class="user-card-photo">
@@ -45,7 +45,7 @@
                     </div>
                 <% }) %>
             <% } else { %>
-                <p>No new potential matches right now. Check back later!</p>
+                <p>No one matches your current filters. Try expanding your search!</p>
             <% } %>
         </div>
     </div>

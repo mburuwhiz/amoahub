@@ -19,7 +19,14 @@ export const uploadProfilePicture = async (req, res) => {
             req.flash('error_msg', 'Please select a file to upload.');
             return res.redirect('/photos/manage');
         }
-        await User.findByIdAndUpdate(req.user.id, { profileImage: req.file.path });
+
+        const profileImage = {
+            url: req.file.path,
+            public_id: req.file.filename
+        };
+
+        await User.findByIdAndUpdate(req.user.id, { profileImage });
+
         req.flash('success_msg', 'Profile picture updated successfully.');
         res.redirect('/photos/manage');
     } catch (err) {
@@ -37,10 +44,16 @@ export const uploadGalleryImages = async (req, res) => {
             req.flash('error_msg', 'Please select one or more files to upload.');
             return res.redirect('/photos/manage');
         }
-        const newImagePaths = req.files.map(file => file.path);
+
+        const newPhotos = req.files.map(file => ({
+            url: file.path,
+            public_id: file.filename
+        }));
+
         await User.findByIdAndUpdate(req.user.id, {
-            $push: { galleryImages: { $each: newImagePaths } }
+            $push: { photos: { $each: newPhotos } }
         });
+
         req.flash('success_msg', 'Gallery photos added successfully.');
         res.redirect('/photos/manage');
     } catch (err) {
@@ -54,22 +67,28 @@ export const uploadGalleryImages = async (req, res) => {
 // @route   POST /photos/delete
 export const deletePhoto = async (req, res) => {
     try {
-        const { imageUrl } = req.body;
-
-        // Extract public ID from Cloudinary URL
-        const publicId = imageUrl.split('/').pop().split('.')[0];
+        const { publicId } = req.body;
+        if (!publicId) {
+            req.flash('error_msg', 'Invalid request.');
+            return res.redirect('/photos/manage');
+        }
 
         // Remove from Cloudinary
-        await cloudinary.uploader.destroy(`amora-hub-profiles/${publicId}`);
-
-        // Remove from user's gallery
-        await User.findByIdAndUpdate(req.user.id, {
-            $pull: { galleryImages: imageUrl }
-        });
+        await cloudinary.uploader.destroy(publicId);
 
         // Check if it was the profile picture and reset to default if so
-        if (req.user.profileImage === imageUrl) {
-             await User.findByIdAndUpdate(req.user.id, { profileImage: '/img/default-avatar.png' });
+        if (req.user.profileImage && req.user.profileImage.public_id === publicId) {
+             await User.findByIdAndUpdate(req.user.id, {
+                 profileImage: {
+                     url: '/img/default-avatar.png',
+                     public_id: null
+                 }
+             });
+        } else {
+            // Remove from user's gallery
+            await User.findByIdAndUpdate(req.user.id, {
+                $pull: { photos: { public_id: publicId } }
+            });
         }
 
         req.flash('success_msg', 'Photo deleted successfully.');

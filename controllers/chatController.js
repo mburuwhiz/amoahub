@@ -70,7 +70,7 @@ export const getChatsPage = async (req, res) => {
             };
         }
 
-        res.render('chats_v2', renderData);
+        res.render('chats_v3', renderData);
 
     } catch (err) {
         console.error(err);

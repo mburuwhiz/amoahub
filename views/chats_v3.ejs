@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="/css/chat_v3.css">
+
+<div id="chat-container" class="chat-container-v3 <% if (activeChat) { %>chat-active<% } %>">
+
+    <!-- Conversation List Sidebar -->
+    <aside class="chat-sidebar-v3">
+        <div class="sidebar-header-v3">
+            <h2>Chats</h2>
+        </div>
+        <ul class="conversation-list-v3">
+            <% if (conversations && conversations.length > 0) { %>
+                <% conversations.forEach(convo => { %>
+                    <li class="conversation-item-v3 <% if (activeChat && activeChat.conversationId.toString() === convo.conversationId.toString()) { %>active<% } %>" onclick="window.location.href='/chats/<%= convo._id %>'">
+                        <img src="<%= (convo.otherUser.profileImage && convo.otherUser.profileImage.url) ? convo.otherUser.profileImage.url : '/img/default-avatar.png' %>" alt="<%= convo.otherUser.displayName %>" class="avatar-v3">
+                        <div class="convo-info-v2"> <!-- Re-using v2 class as it's just a container -->
+                            <div class="convo-name-v2"><%= convo.otherUser.displayName %></div>
+                            <div class="convo-preview-v2"><%= convo.lastMessage || 'No messages yet' %></div>
+                        </div>
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <li class="no-conversations">No conversations yet.</li>
+            <% } %>
+        </ul>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main-v3">
+        <% if (activeChat) { %>
+            <div class="chat-header-v3">
+                <a href="/chats" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <a href="/users/<%= activeChat.otherUser._id %>">
+                    <img src="<%= (activeChat.otherUser.profileImage && activeChat.otherUser.profileImage.url) ? activeChat.otherUser.profileImage.url : '/img/default-avatar.png' %>" alt="<%= activeChat.otherUser.displayName %>" class="avatar-v3">
+                    <h3>
+                        <%= activeChat.otherUser.displayName %>
+                        <% if (activeChat.otherUser.isVerified) { %>
+                            <img src="/img/verified-badge.svg" alt="Verified" class="verified-badge-icon">
+                        <% } %>
+                    </h3>
+                </a>
+            </div>
+
+            <div id="message-container" class="message-container-v3">
+                <% activeChat.messages.forEach(message => { %>
+                    <div class="message-bubble-v3 <%= message.sender.toString() === user._id.toString() ? 'sent' : 'received' %>">
+                        <%- message.content %>
+                    </div>
+                <% }) %>
+            </div>
+
+            <form id="chat-form-v3" class="chat-form-v3">
+                <input type="text" id="message-input-v3" placeholder="Type a message..." autocomplete="off" class="message-input-v3">
+                <button type="submit" class="send-btn-v3"><i class="fas fa-paper-plane"></i></button>
+            </form>
+
+        <% } else { %>
+            <div class="chat-welcome-v3">
+                <div>
+                    <h3>Select a conversation</h3>
+                    <p>Choose from your existing conversations on the left to start chatting.</p>
+                </div>
+            </div>
+        <% } %>
+    </main>
+</div>
+
+<% if (activeChat) { %>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const socket = io();
+        const conversationId = "<%= activeChat.conversationId %>";
+        const senderId = "<%= user._id %>";
+
+        const messageContainer = document.getElementById('message-container');
+        const chatForm = document.getElementById('chat-form-v3');
+        const messageInput = document.getElementById('message-input-v3');
+
+        socket.emit('joinChat', conversationId);
+
+        socket.on('message', (message) => {
+            if (message.conversationId.toString() === conversationId) {
+                appendMessage(message);
+            }
+        });
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = messageInput.value.trim();
+            if (content) {
+                socket.emit('chatMessage', { conversationId, senderId, content });
+                messageInput.value = '';
+            }
+        });
+
+        function appendMessage(message) {
+            const isSent = message.sender._id.toString() === senderId;
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message-bubble-v3', isSent ? 'sent' : 'received');
+
+            if (message.messageType === 'image' && message.content) {
+                messageElement.innerHTML = `<img src="${message.content}" alt="Chat Image" style="max-width: 100%; border-radius: 1rem;">`;
+            } else {
+                messageElement.innerText = message.content;
+            }
+
+            messageContainer.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        scrollToBottom();
+    });
+</script>
+<% } %>

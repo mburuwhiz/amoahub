@@ -8,8 +8,8 @@
         <ul class="conversation-list-v2">
             <% if (conversations && conversations.length > 0) { %>
                 <% conversations.forEach(convo => { %>
-                    <li class="conversation-item-v2 <% if (activeChat && activeChat.conversationId.toString() === convo._id.toString()) { %>active<% } %>" onclick="window.location.href='/chats/<%= convo._id %>'">
-                        <img src="<%= convo.otherUser.profileImage.url %>" alt="<%= convo.otherUser.displayName %>" class="avatar-v2">
+                    <li class="conversation-item-v2 <% if (activeChat && activeChat.conversationId.toString() === convo.conversationId.toString()) { %>active<% } %>" onclick="window.location.href='/chats/<%= convo._id %>'">
+                        <img src="<%= (convo.otherUser.profileImage && convo.otherUser.profileImage.url) ? convo.otherUser.profileImage.url : '/img/default-avatar.png' %>" alt="<%= convo.otherUser.displayName %>" class="avatar-v2">
                         <div class="convo-info-v2">
                             <div class="convo-name-v2"><%= convo.otherUser.displayName %></div>
                             <div class="convo-preview-v2"><%= convo.lastMessage || 'No messages yet' %></div>
@@ -28,11 +28,11 @@
             <div class="chat-header-v2">
                 <a href="/chats" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
                 <a href="/users/<%= activeChat.otherUser._id %>">
-                    <img src="<%= activeChat.otherUser.profileImage.url %>" alt="<%= activeChat.otherUser.displayName %>" class="avatar-v2">
+                    <img src="<%= (activeChat.otherUser.profileImage && activeChat.otherUser.profileImage.url) ? activeChat.otherUser.profileImage.url : '/img/default-avatar.png' %>" alt="<%= activeChat.otherUser.displayName %>" class="avatar-v2">
                     <h3>
                         <%= activeChat.otherUser.displayName %>
                         <% if (activeChat.otherUser.isVerified) { %>
-                            <img src="/img/verified_badge.svg" alt="Verified" class="verified-badge-icon">
+                            <img src="/img/verified-badge.svg" alt="Verified" class="verified-badge-icon">
                         <% } %>
                     </h3>
                 </a>

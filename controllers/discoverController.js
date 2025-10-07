@@ -37,15 +37,15 @@ export const getDiscoverPage = async (req, res) => {
             query.gender = { $in: currentUser.preferences.gender };
         }
 
-        // 4. Fetch potential matches
-        const potentialMatches = await User.find(query).limit(20).lean();
+        // 4. Fetch all people matching the criteria
+        const allPeople = await User.find(query).lean();
 
         // 5. Render the page
         res.render('discover_v2', {
             title: 'Discover People',
             user: currentUser,
             recentlyViewed: currentUser.recentlyViewed,
-            potentialMatches,
+            allPeople,
         });
 
     } catch (err) {
@@ -81,7 +81,7 @@ export const likeUser = async (req, res) => {
                 targetUser: {
                     _id: targetUser._id,
                     displayName: targetUser.displayName,
-                    profileImage: targetUser.profileImage
+                    profileImage: { url: targetUser.profileImage.url }
                 }
             });
         }

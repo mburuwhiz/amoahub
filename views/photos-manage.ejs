@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Manage Photos | Amora Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
             <div class="form-group">
                 <h3>Profile Picture</h3>
                 <div class="current-profile-pic">
-                    <img src="<%= user.profileImage %>" alt="Current Profile Picture">
+                    <img src="<%= (user.profileImage && user.profileImage.url) ? user.profileImage.url : '/img/default-avatar.png' %>" alt="Current Profile Picture">
                 </div>
                 <form action="/photos/upload-profile" method="POST" enctype="multipart/form-data">
                     <label for="newProfileImage" class="submit-btn" style="display: inline-block; width: auto; margin-top: 1rem; cursor: pointer;">Upload New Profile Picture</label>
@@ -33,19 +33,19 @@
 
             <h3>Gallery Images</h3>
             <div class="gallery-manage-grid">
-                <% if (user.galleryImages && user.galleryImages.length > 0) { %>
-                    <% user.galleryImages.forEach(img => { %>
+                <% if (user.photos && user.photos.length > 0) { %>
+                    <% user.photos.forEach(photo => { %>
                         <div class="gallery-manage-item">
-                            <img src="<%= img %>" alt="Gallery Image">
+                            <img src="<%= photo.url %>" alt="Gallery Image">
                             <form action="/photos/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this photo?');">
-                                <input type="hidden" name="imageUrl" value="<%= img %>">
+                                <input type="hidden" name="publicId" value="<%= photo.public_id %>">
                                 <button type="submit" class="delete-btn">×</button>
                             </form>
                         </div>
                     <% }) %>
                 <% } %>
 
-                <% if (!user.galleryImages || user.galleryImages.length < 4) { %>
+                <% if (!user.photos || user.photos.length < 4) { %>
                 <form action="/photos/upload-gallery" method="POST" enctype="multipart/form-data" class="gallery-manage-item upload">
                      <label for="newGalleryImages" style="cursor: pointer; text-align: center;">
                         +<br>Add Photo

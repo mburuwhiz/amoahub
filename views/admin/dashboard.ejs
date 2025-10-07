@@ -32,7 +32,7 @@
                                 <tr class="clickable-row" data-href="/users/<%= u._id %>">
                                     <td>
                                         <div class="user-cell">
-                                            <img src="<%= u.profileImage || '/img/default-avatar.png' %>" alt="<%= u.displayName %>" class="admin-user-avatar">
+                                            <img src="<%= (u.profileImage && u.profileImage.url) ? u.profileImage.url : '/img/default-avatar.png' %>" alt="<%= u.displayName %>" class="admin-user-avatar">
                                             <span><%= u.displayName %></span>
                                         </div>
                                     </td>
