@@ -71,6 +71,7 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error'); // For passport login failures
+  res.locals.logout_success = req.flash('logout_success'); // For the custom logout notification
   next();
 });
 
