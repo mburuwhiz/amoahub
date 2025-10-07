@@ -112,6 +112,15 @@
             messageContainer.scrollTop = messageContainer.scrollHeight;
         }
 
+        // Scroll input into view on mobile when keyboard appears
+        messageInput.addEventListener('focus', () => {
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    chatForm.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 100); // Small delay to let keyboard animate in
+            }
+        });
+
         scrollToBottom();
     });
 </script>

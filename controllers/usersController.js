@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Report from '../models/Report.js';
 
 // @desc    View another user's profile
 // @route   GET /users/:id
@@ -37,5 +38,57 @@ export const viewUserProfile = async (req, res) => {
         console.error(err);
         req.flash('error_msg', 'There was an error viewing the profile.');
         res.redirect('/discover');
+    }
+};
+
+// @desc    Block a user
+// @route   POST /users/:id/block
+export const blockUser = async (req, res) => {
+    try {
+        const userIdToBlock = req.params.id;
+        const currentUserId = req.user.id;
+
+        // Add to current user's blocked list
+        await User.findByIdAndUpdate(currentUserId, {
+            $addToSet: { blockedUsers: userIdToBlock }
+        });
+
+        // Optional: remove from likes/matches if they exist
+        await User.findByIdAndUpdate(currentUserId, {
+            $pull: { likes: userIdToBlock, matches: userIdToBlock }
+        });
+
+        res.status(200).json({ success: true, message: 'User blocked.' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+};
+
+// @desc    Report a user
+// @route   POST /users/:id/report
+export const reportUser = async (req, res) => {
+    try {
+        const reportedUserId = req.params.id;
+        const reporterId = req.user.id;
+        const { reason } = req.body;
+
+        if (!reason) {
+            return res.status(400).json({ success: false, message: 'A reason is required to submit a report.' });
+        }
+
+        const report = new Report({
+            reporter: reporterId,
+            reportedUser: reportedUserId,
+            reason: reason,
+        });
+
+        await report.save();
+
+        res.status(201).json({ success: true, message: 'Report submitted successfully.' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server error.' });
     }
 };

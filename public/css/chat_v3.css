@@ -89,9 +89,8 @@
     }
 
     .chat-sidebar-v3 {
-        width: 30%;
-        min-width: 280px;
-        max-width: 350px;
+        width: 33.33%;
+        flex-shrink: 0; /* Prevent the sidebar from shrinking */
         border-right: 1px solid #e0e0e0;
     }
 

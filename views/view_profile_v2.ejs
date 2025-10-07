@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="/css/profile.css">
 
-<div class="profile-container-v2">
+<div class="profile-container-v2" data-user-id="<%= profile._id %>">
     <div class="profile-card-v2">
         <!-- Profile Header -->
         <div class="profile-header-v2">
@@ -9,16 +9,18 @@
                 <img src="<%= (profile.profileImage && profile.profileImage.url) ? profile.profileImage.url : '/img/default-avatar.png' %>" alt="<%= profile.displayName %>" class="profile-avatar-v2">
                 <h1 class="profile-name-v2">
                     <%= profile.displayName %>, <%= profile.age %>
-                    <% if (profile.isVerified) { %> <img src="/img/verified_badge.svg" alt="Verified" class="verified-badge-icon"> <% } %>
+                    <% if (profile.isVerified) { %> <img src="/img/verified-badge.svg" alt="Verified" class="verified-badge-icon"> <% } %>
                 </h1>
             </div>
         </div>
 
         <!-- Profile Actions -->
         <div class="profile-actions-v2">
+            <button class="action-btn like-btn"><i class="fas fa-heart"></i> Like</button>
+            <button class="action-btn dislike-btn"><i class="fas fa-times"></i> Dislike</button>
             <a href="/chats/<%= profile._id %>" class="action-btn message"><i class="fas fa-comments"></i> Message</a>
-            <button id="report-btn" class="action-btn report"><i class="fas fa-flag"></i> Report</button>
-            <button id="block-btn" class="action-btn block"><i class="fas fa-ban"></i> Block</button>
+            <button class="action-btn report-btn"><i class="fas fa-flag"></i> Report</button>
+            <button class="action-btn block-btn"><i class="fas fa-ban"></i> Block</button>
         </div>
 
         <!-- Profile Body -->
@@ -74,13 +76,76 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.getElementById('report-btn').addEventListener('click', () => {
-    // Logic for reporting a user
-    Swal.fire('Report User', 'This feature is coming soon!', 'info');
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.profile-container-v2');
+    const userId = container.dataset.userId;
 
-document.getElementById('block-btn').addEventListener('click', () => {
-    // Logic for blocking a user
-    Swal.fire('Block User', 'This feature is coming soon!', 'info');
+    container.addEventListener('click', async (e) => {
+        const target = e.target.closest('.action-btn');
+        if (!target) return;
+
+        if (target.classList.contains('like-btn') || target.classList.contains('dislike-btn')) {
+            const isLike = target.classList.contains('like-btn');
+            const url = isLike ? `/discover/like/${userId}` : `/discover/dislike/${userId}`;
+
+            try {
+                const response = await fetch(url, { method: 'POST' });
+                const result = await response.json();
+                if (result.match) {
+                    Swal.fire('It\'s a Match!', `You and ${'<%= profile.displayName %>'} have liked each other.`, 'success');
+                } else {
+                    Swal.fire(isLike ? 'Liked!' : 'Disliked!', 'Your choice has been recorded.', 'success');
+                }
+            } catch (err) {
+                Swal.fire('Error', 'Something went wrong.', 'error');
+            }
+        }
+
+        if (target.classList.contains('report-btn')) {
+            const { value: reason } = await Swal.fire({
+                title: 'Report <%= profile.displayName %>',
+                input: 'textarea',
+                inputPlaceholder: 'Please provide a reason for the report...',
+                inputAttributes: { 'aria-label': 'Reason for report' },
+                showCancelButton: true,
+                confirmButtonText: 'Submit Report'
+            });
+
+            if (reason) {
+                try {
+                    await fetch(`/users/${userId}/report`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ reason })
+                    });
+                    Swal.fire('Reported!', 'Thank you for your feedback.', 'success');
+                } catch (err) {
+                    Swal.fire('Error', 'Could not submit report.', 'error');
+                }
+            }
+        }
+
+        if (target.classList.contains('block-btn')) {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to see this profile, and they won't see yours.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, block them!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await fetch(`/users/${userId}/block`, { method: 'POST' });
+                    Swal.fire('Blocked!', '<%= profile.displayName %> has been blocked.', 'success').then(() => {
+                        window.location.href = '/discover';
+                    });
+                } catch (err) {
+                    Swal.fire('Error', 'Could not block user.', 'error');
+                }
+            }
+        }
+    });
 });
 </script>
