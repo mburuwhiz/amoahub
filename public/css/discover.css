@@ -1,138 +1,125 @@
-/* Discover Page Layout */
-.discover-container-v2 {
-    padding: 1.5rem;
+/*
+  Discover Page v3: Rebuilt from scratch based on detailed developer guidance.
+*/
+
+/* --- Main Page Centering --- */
+.discover-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: calc(100vh - 70px); /* Full height minus desktop header */
 }
 
-.discover-section {
-    margin-bottom: 2.5rem;
+.discover-container-v3 {
+    width: 100%;
+    max-width: 900px;
+    padding: 2rem;
 }
 
 .discover-section h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e9ecef;
 }
 
-/* Recently Viewed Section */
+/* --- Unified Discover Card --- */
+.discover-card {
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.discover-card-img-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 0.5rem;
+}
+
+.discover-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+}
+
+.discover-card-name {
+    font-weight: bold;
+    margin: 0;
+}
+
+.discover-card-subtext {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* --- Recently Viewed (Horizontal Scroller) --- */
+.recently-viewed-container {
+    position: relative;
+}
+
 .recently-viewed-scroller {
     display: flex;
     gap: 1rem;
     overflow-x: auto;
-    padding-bottom: 1rem; /* For scrollbar */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    scroll-behavior: smooth;
+    padding-bottom: 1rem;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 .recently-viewed-scroller::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and Opera */
+    display: none; /* Chrome, Safari, Opera */
 }
 
-/* All People Section */
+.recently-viewed-scroller .discover-card {
+    flex: 0 0 calc(50% - 0.5rem); /* 2 cards on mobile */
+}
+
+.scroll-arrow {
+    display: none; /* Hidden on mobile */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+}
+.scroll-arrow.left { left: -20px; }
+.scroll-arrow.right { right: -20px; }
+
+/* --- All People (Vertical Grid) --- */
 .all-people-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
     gap: 1.5rem;
-}
-
-/* User Card Styles */
-.user-card-v2 {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.user-card-v2:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-}
-
-.user-card-photo {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-}
-
-.user-card-info {
+    max-height: 40vh; /* Constrain height to make it scrollable */
+    overflow-y: auto;
     padding: 1rem;
-}
-
-.user-card-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.user-card-location {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-top: 0.25rem;
-}
-
-.user-card-link {
-    text-decoration: none;
-    color: inherit;
-}
-
-.user-card-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 1rem;
-}
-
-.user-card-actions .action-btn {
-    background-color: #f0f2f5;
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.user-card-actions .action-btn:hover {
-    transform: scale(1.1);
-}
-
-.user-card-actions .like-btn {
-    color: #28a745;
-}
-
-.user-card-actions .dislike-btn {
-    color: #dc3545;
-}
-
-/* Filters */
-.filters-container {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: #f8f9fa;
     border-radius: 8px;
+    background: #f8f9fa;
 }
 
-.filters-container form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-}
+/* --- Desktop Overrides --- */
+@media (min-width: 769px) {
+    .recently-viewed-scroller .discover-card {
+        flex: 0 0 calc(33.33% - 1rem); /* 3 cards on desktop */
+    }
 
-.filters-container label {
-    font-weight: 600;
-}
+    .scroll-arrow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.filters-container select, .filters-container input {
-    padding: 0.5rem;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
+    .all-people-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
+    }
 }
