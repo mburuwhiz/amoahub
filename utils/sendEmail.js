@@ -6,10 +6,11 @@ const sendEmail = async (options) => {
   const apiKey = process.env.EMAIL_SERVICE_API_KEY;
 
   const body = {
+    from: 'Amora Hub <hub.amora@gmail.com>',
     to,
     subject,
     template,
-    context: data, // The microservice might expect 'context' instead of 'data'
+    context: data,
   };
 
   try {
