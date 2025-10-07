@@ -48,10 +48,16 @@
                 <% }) %>
             </div>
 
-            <form id="chat-form-v3" class="chat-form-v3">
-                <input type="text" id="message-input-v3" placeholder="Type a message..." autocomplete="off" class="message-input-v3">
-                <button type="submit" class="send-btn-v3"><i class="fas fa-paper-plane"></i></button>
-            </form>
+            <% if (activeChat.otherUser.role !== 'admin') { %>
+                <form id="chat-form-v3" class="chat-form-v3">
+                    <input type="text" id="message-input-v3" placeholder="Type a message..." autocomplete="off" class="message-input-v3">
+                    <button type="submit" class="send-btn-v3"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            <% } else { %>
+                <div class="chat-form-disabled">
+                    <p>You cannot reply to this conversation.</p>
+                </div>
+            <% } %>
 
         <% } else { %>
             <div class="chat-welcome-v3">

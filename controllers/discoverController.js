@@ -12,16 +12,14 @@ export const getDiscoverPage = async (req, res) => {
             })
             .lean();
 
-        // 2. Define users to exclude from matching
+        // 2. Define users to exclude from the "All People" list (only self, disliked, and blocked)
         const excludedUsers = [
             currentUser._id,
-            ...currentUser.likes,
             ...currentUser.dislikes,
             ...currentUser.blockedUsers,
-            ...currentUser.recentlyViewed.map(u => u._id)
         ];
 
-        // 3. Build the query for potential matches based on user's preferences
+        // 3. Build the query for "All People" based on user's preferences
         const query = {
             _id: { $nin: excludedUsers },
             status: 'active',
@@ -40,17 +38,11 @@ export const getDiscoverPage = async (req, res) => {
         // 4. Fetch all people matching the criteria
         const allPeople = await User.find(query).lean();
 
-        // 5. Filter recently viewed to exclude liked users
-        const likedUserIds = new Set(currentUser.likes.map(id => id.toString()));
-        const filteredRecentlyViewed = currentUser.recentlyViewed.filter(
-            user => !likedUserIds.has(user._id.toString())
-        );
-
-        // 6. Render the page
+        // 5. Render the page with the full recentlyViewed list
         res.render('discover_v2', {
             title: 'Discover People',
             user: currentUser,
-            recentlyViewed: filteredRecentlyViewed,
+            recentlyViewed: currentUser.recentlyViewed,
             allPeople,
         });
 

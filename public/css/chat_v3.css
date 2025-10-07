@@ -57,6 +57,15 @@
 #message-input-v3 { flex-grow: 1; border: 1px solid #ddd; padding: 0.75rem 1rem; border-radius: 1.5rem; }
 .chat-welcome-v3 { display: flex; justify-content: center; align-items: center; height: 100%; }
 
+.chat-form-disabled {
+    padding: 1rem;
+    text-align: center;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-style: italic;
+    border-top: 1px solid #e0e0e0;
+}
+
 /* --- Desktop Overrides --- */
 @media (min-width: 769px) {
     .chat-container-v3 {
