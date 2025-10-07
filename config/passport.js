@@ -25,8 +25,8 @@ export default function (passport) {
           return done(null, false, { message: 'Password incorrect' });
         }
 
-        // Check if the user is verified (only for non-Google users)
-        if (user.password && !user.isVerified) {
+        // Check if the user's email is verified (only for non-Google users)
+        if (user.password && !user.isEmailVerified) {
             return done(null, false, { message: 'Please verify your email address before logging in.' });
         }
 
