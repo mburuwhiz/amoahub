@@ -40,11 +40,17 @@ export const getDiscoverPage = async (req, res) => {
         // 4. Fetch all people matching the criteria
         const allPeople = await User.find(query).lean();
 
-        // 5. Render the page
+        // 5. Filter recently viewed to exclude liked users
+        const likedUserIds = new Set(currentUser.likes.map(id => id.toString()));
+        const filteredRecentlyViewed = currentUser.recentlyViewed.filter(
+            user => !likedUserIds.has(user._id.toString())
+        );
+
+        // 6. Render the page
         res.render('discover_v2', {
             title: 'Discover People',
             user: currentUser,
-            recentlyViewed: currentUser.recentlyViewed,
+            recentlyViewed: filteredRecentlyViewed,
             allPeople,
         });
 

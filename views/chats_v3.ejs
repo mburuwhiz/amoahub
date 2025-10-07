@@ -42,7 +42,7 @@
 
             <div id="message-container" class="message-container-v3">
                 <% activeChat.messages.forEach(message => { %>
-                    <div class="message-bubble-v3 <%= message.sender.toString() === user._id.toString() ? 'sent' : 'received' %>">
+                    <div class="message-bubble-v3 <%= message.sender._id.toString() === user._id.toString() ? 'sent' : 'received' %>">
                         <%- message.content %>
                     </div>
                 <% }) %>
@@ -116,3 +116,17 @@
     });
 </script>
 <% } %>
+
+<style>
+    /* This style block ensures the bottom nav is hidden on mobile when in a chat, as requested */
+    @media (max-width: 768px) {
+        .chat-container-v3 {
+            /* When the chat is open, it should be above the main nav */
+            z-index: 1500;
+        }
+        /* Hide the main app's bottom nav when any chat view is active */
+        body:has(.chat-container-v3) .bottom-nav {
+            display: none;
+        }
+    }
+</style>

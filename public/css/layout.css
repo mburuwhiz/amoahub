@@ -9,51 +9,69 @@ body {
 
 /* --- Desktop Layout (Visible on screens > 768px) --- */
 @media (min-width: 769px) {
-    .sidebar {
-        width: 250px;
-        background-color: #fff;
-        height: 100vh;
+    .desktop-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 40px;
+        height: 70px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         position: fixed;
-        left: 0;
         top: 0;
-        padding: 20px;
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        left: 0;
+        width: 100%;
         z-index: 1000;
     }
 
-    .sidebar .logo {
+    .desktop-header .logo a {
         font-size: 24px;
         font-weight: bold;
-        margin-bottom: 30px;
-    }
-
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .sidebar ul li {
-        margin-bottom: 15px;
-    }
-
-    .sidebar ul li a {
-        text-decoration: none;
         color: #333;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        text-decoration: none;
     }
 
-    .sidebar ul li a.active {
-        color: #007bff;
-        font-weight: bold;
+    .desktop-nav {
+        display: flex;
+        gap: 30px;
+    }
+
+    .desktop-nav a {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+        font-size: 16px;
+        position: relative;
+    }
+
+    .desktop-nav a:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 50%;
+        background-color: #007bff;
+        transition: all 0.3s ease;
+    }
+
+    .desktop-nav a:hover:after,
+    .desktop-nav a.active:after {
+        width: 100%;
+        left: 0;
+    }
+
+    .logout-btn {
+        background: #007bff;
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 500;
     }
 
     .main-content {
-        margin-left: 250px;
-        padding: 20px;
-        width: calc(100% - 250px);
+        padding: 90px 20px 20px 20px; /* 70px header + 20px padding */
     }
 
     /* Hide mobile nav on desktop */
@@ -64,8 +82,8 @@ body {
 
 /* --- Mobile Layout (Visible on screens <= 768px) --- */
 @media (max-width: 768px) {
-    /* Hide desktop sidebar on mobile */
-    .sidebar {
+    /* Hide desktop header on mobile */
+    .desktop-header {
         display: none;
     }
 
