@@ -1,5 +1,5 @@
 import express from 'express';
-import { getDashboard, toggleUserStatus, postBroadcast, dismissReport, toggleUserVerify } from '../controllers/adminController.js';
+import { getDashboard, toggleUserStatus, postBroadcast, dismissReport, toggleUserVerify, deleteUser } from '../controllers/adminController.js';
 import { ensureAuth } from '../middleware/auth.js';
 import { isAdmin } from '../middleware/admin.js';
 
@@ -27,5 +27,9 @@ router.post('/reports/:id/dismiss', dismissReport);
 // @desc    Toggle a user's verification status
 // @route   POST /users/:id/toggle-verify
 router.post('/users/:id/toggle-verify', toggleUserVerify);
+
+// @desc    Delete a user
+// @route   POST /users/:id/delete
+router.post('/users/:id/delete', deleteUser);
 
 export default router;

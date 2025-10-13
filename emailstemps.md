@@ -70,6 +70,17 @@ Below are the specific `template` names sent by the application and the structur
     }
     ```
 
+### 8. `accountDeletedAdmin`
+
+-   **Purpose:** Sent to a user when an admin deletes their account, for example due to incomplete onboarding.
+-   **`context` object structure:**
+    ```json
+    {
+      "name": "string",
+      "reason": "string"
+    }
+    ```
+
 ### 4. `userBanned`
 
 -   **Purpose:** Sent to a user when an admin bans their account.

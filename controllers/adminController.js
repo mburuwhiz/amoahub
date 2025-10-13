@@ -61,6 +61,52 @@ export const toggleUserStatus = async (req, res) => {
     }
 };
 
+// @desc    Delete a user by admin
+// @route   POST /admin/users/:id/delete
+export const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            req.flash('error_msg', 'User not found.');
+            return res.redirect('/admin/dashboard');
+        }
+
+        // Prevent deleting other admins
+        if (user.role === 'admin') {
+            req.flash('error_msg', 'Admins cannot be deleted.');
+            return res.redirect('/admin/dashboard');
+        }
+
+        const userName = user.displayName;
+        const userEmail = user.email;
+
+        await User.findByIdAndDelete(req.params.id);
+
+        try {
+            await sendEmail({
+                to: userEmail,
+                subject: 'Your Amora Hub Account Has Been Deleted',
+                template: 'accountDeletedAdmin',
+                data: {
+                    name: userName,
+                    reason: 'incomplete onboarding process'
+                },
+            });
+        } catch (emailErr) {
+            console.error(`Failed to send account deletion email to ${userEmail}:`, emailErr);
+            // Non-critical, the user is already deleted. Log it.
+        }
+
+        req.flash('success_msg', `User ${userName} has been deleted.`);
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Error deleting user.');
+        res.redirect('/admin/dashboard');
+    }
+};
+
 // @desc    Broadcast a message to all users
 // @route   POST /admin/broadcast
 export const postBroadcast = async (req, res) => {
