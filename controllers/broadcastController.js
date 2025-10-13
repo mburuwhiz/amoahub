@@ -13,7 +13,6 @@ export const getBroadcastMessage = async (req, res) => {
 
         res.render('broadcast', {
             title: 'Announcement',
-            layout: 'layouts/main_v2',
             user: req.user,
             broadcast: broadcast,
         });
