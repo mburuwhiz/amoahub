@@ -1,0 +1,53 @@
+<div class="admin-broadcast-container">
+    <h2>Send Broadcast Message</h2>
+    <p>This message will be sent as a real-time notification to all currently online users.</p>
+
+    <form id="broadcast-form">
+        <div class="form-group">
+            <label for="broadcast-message">Message</label>
+            <textarea id="broadcast-message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn">Send Broadcast</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('broadcast-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = e.target.elements.message.value;
+
+        try {
+            const response = await fetch('/admin/broadcast', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Broadcast Sent!',
+                    text: 'Your message has been sent to all online users.',
+                });
+                e.target.reset(); // Clear the form
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: result.message || 'Could not send broadcast.',
+                });
+            }
+        } catch (err) {
+            console.error('Broadcast error:', err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Broadcast Failed',
+                text: 'An unexpected error occurred.',
+            });
+        }
+    });
+</script>

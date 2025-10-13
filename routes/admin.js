@@ -1,5 +1,5 @@
 import express from 'express';
-import { getDashboard, toggleUserStatus, postBroadcast, dismissReport, toggleUserVerify, deleteUser } from '../controllers/adminController.js';
+import { getDashboard, toggleUserStatus, postBroadcast, dismissReport, toggleUserVerify, deleteUser, getBroadcastPage } from '../controllers/adminController.js';
 import { ensureAuth } from '../middleware/auth.js';
 import { isAdmin } from '../middleware/admin.js';
 
@@ -15,6 +15,10 @@ router.get('/dashboard', getDashboard);
 // @desc    Toggle a user's status (ban/unban)
 // @route   POST /users/:id/toggle-status
 router.post('/users/:id/toggle-status', toggleUserStatus);
+
+// @desc    Show broadcast page
+// @route   GET /broadcast
+router.get('/broadcast', getBroadcastPage);
 
 // @desc    Broadcast a message
 // @route   POST /broadcast

@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import Report from '../models/Report.js';
+import Notification from '../models/Notification.js';
 
 // @desc    View another user's profile
 // @route   GET /users/:id
@@ -26,6 +27,18 @@ export const viewUserProfile = async (req, res) => {
         await User.findByIdAndUpdate(req.user._id, {
             $push: { recentlyViewed: { $each: [], $slice: -15 } }
         });
+
+        // Create and emit a notification to the user whose profile was viewed
+        const notification = {
+            recipient: userToView._id,
+            sender: req.user._id,
+            type: 'profile_view',
+            message: `${req.user.displayName} viewed your profile.`,
+            link: `/users/${req.user._id}`
+        };
+        await Notification.create(notification);
+        const io = req.app.get('io');
+        io.to(userToView._id.toString()).emit('new_notification', notification);
 
         res.render('view_profile_v2', {
             title: `${userToView.displayName}'s Profile`,

@@ -32,5 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
             title: '<%= error %>'
         });
     <% } %>
+
+    <% if (typeof logout_success !== 'undefined' && logout_success.length > 0) { %>
+        Toast.fire({
+            icon: 'info',
+            title: '<%= logout_success %>'
+        });
+    <% } %>
 });
 </script>

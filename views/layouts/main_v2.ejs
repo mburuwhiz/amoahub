@@ -81,5 +81,45 @@
             });
         });
     </script>
+
+    <!-- Socket.IO Client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            const displayNotification = (notification) => {
+                Toast.fire({
+                    icon: 'info',
+                    title: notification.message,
+                    html: `<a href="${notification.link}" style="text-decoration: none; color: inherit;">${notification.message}</a>`,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        if (notification.link) {
+                            toast.addEventListener('click', () => {
+                                window.location.href = notification.link;
+                            });
+                        }
+                    }
+                });
+            };
+
+            socket.on('new_notification', displayNotification);
+            socket.on('admin_broadcast', displayNotification);
+        });
+    </script>
 </body>
 </html>

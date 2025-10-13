@@ -4,6 +4,16 @@ import Broadcast from '../models/Broadcast.js';
 import Notification from '../models/Notification.js';
 import sendEmail from '../utils/sendEmail.js';
 
+// @desc    Show broadcast page
+// @route   GET /admin/broadcast
+export const getBroadcastPage = (req, res) => {
+    res.render('admin/broadcast', {
+        title: 'Send Broadcast',
+        layout: 'layouts/admin',
+        user: req.user,
+    });
+};
+
 // @desc    Admin Dashboard
 // @route   GET /admin/dashboard
 export const getDashboard = async (req, res) => {
@@ -136,6 +146,13 @@ export const postBroadcast = async (req, res) => {
             await Notification.insertMany(notifications);
         }
 
+        // Emit a global broadcast event to all connected clients
+        const io = req.app.get('io');
+        io.emit('admin_broadcast', {
+            message: `A new announcement from Amora Hub: "${message.substring(0, 50)}..."`,
+            link: `/broadcasts/${broadcast._id}`
+        });
+
         // Send email to all users
         for (const user of usersToNotify) {
             try {
@@ -153,8 +170,7 @@ export const postBroadcast = async (req, res) => {
             }
         }
 
-        req.flash('success_msg', `Broadcast sent to ${usersToNotify.length} users.`);
-        res.redirect('/admin/dashboard');
+        res.status(200).json({ success: true, message: `Broadcast sent to ${usersToNotify.length} users.` });
 
     } catch (err) {
         console.error(err);

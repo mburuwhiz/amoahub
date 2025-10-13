@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Notification from '../models/Notification.js';
 
 // @desc    Show new discover page with recently viewed and potential matches
 // @route   GET /discover
@@ -71,8 +72,29 @@ export const likeUser = async (req, res) => {
             await User.findByIdAndUpdate(currentUser._id, { $addToSet: { matches: targetUserId } });
             await User.findByIdAndUpdate(targetUserId, { $addToSet: { matches: currentUser._id } });
 
-            // In a real app, you'd send a real-time notification here via Socket.IO
-            console.log(`It's a match between ${currentUser.displayName} and ${targetUser.displayName}!`);
+            // It's a match! Create notifications for both users.
+            const notificationForCurrentUser = {
+                recipient: currentUser._id,
+                sender: targetUser._id,
+                type: 'new_match',
+                message: `You matched with ${targetUser.displayName}!`,
+                link: `/users/${targetUser._id}`
+            };
+            const notificationForTargetUser = {
+                recipient: targetUser._id,
+                sender: currentUser._id,
+                type: 'new_match',
+                message: `You matched with ${currentUser.displayName}!`,
+                link: `/users/${currentUser._id}`
+            };
+
+            await Notification.create(notificationForCurrentUser);
+            await Notification.create(notificationForTargetUser);
+
+            // Emit real-time notifications
+            const io = req.app.get('io');
+            io.to(currentUser._id.toString()).emit('new_notification', notificationForCurrentUser);
+            io.to(targetUser._id.toString()).emit('new_notification', notificationForTargetUser);
 
             return res.json({
                 match: true,
