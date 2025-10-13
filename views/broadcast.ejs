@@ -1,44 +1,67 @@
-<div class="broadcast-container">
-    <h1>📢 Announcement from Amora Hub</h1>
+<div class="broadcast-view-container">
     <div class="broadcast-card">
-        <p class="broadcast-message"><%= broadcast.message %></p>
-        <div class="broadcast-footer">
-            <span>Sent by <%= broadcast.admin.displayName %> on <%= new Date(broadcast.createdAt).toLocaleDateString() %></span>
+        <header class="broadcast-header">
+            <h1>Announcement from Amora Hub</h1>
+            <span class="broadcast-date"><%= new Date(broadcast.createdAt).toLocaleDateString() %></span>
+        </header>
+        <div class="broadcast-content">
+            <p><%= broadcast.message %></p>
         </div>
+        <footer class="broadcast-footer">
+            <a href="/notifications" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Notifications
+            </a>
+        </footer>
     </div>
-    <a href="/notifications" class="back-link">Back to Notifications</a>
 </div>
 
 <style>
-.broadcast-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 2rem;
-}
-.broadcast-card {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin-top: 1.5rem;
-    border: 1px solid var(--border-color);
-}
-.broadcast-message {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    white-space: pre-wrap; /* This preserves line breaks from the textarea */
-}
-.broadcast-footer {
-    margin-top: 2rem;
-    text-align: right;
-    font-size: 0.9rem;
-    color: #666;
-}
-.back-link {
-    display: inline-block;
-    margin-top: 2rem;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-}
+    .broadcast-view-container {
+        padding: 2rem;
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .broadcast-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .broadcast-header {
+        background-color: var(--primary-color, #e53e3e);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+    }
+
+    .broadcast-header h1 {
+        margin: 0;
+        font-size: 1.75rem;
+    }
+
+    .broadcast-date {
+        opacity: 0.8;
+        font-size: 0.9rem;
+    }
+
+    .broadcast-content {
+        padding: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .broadcast-footer {
+        padding: 1rem 2rem;
+        text-align: right;
+        background-color: #f7fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-back {
+        text-decoration: none;
+        color: var(--primary-color, #e53e3e);
+        font-weight: 600;
+    }
 </style>

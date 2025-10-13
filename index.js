@@ -106,9 +106,11 @@ import chatRoutes from './routes/chat.js';
 import Message from './models/Message.js';
 import Conversation from './models/Conversation.js';
 import photosRoutes from './routes/photos.js';
+import broadcastRoutes from './routes/broadcast.js';
 app.use('/', pagesRoutes);
 app.use('/chats', chatRoutes);
 app.use('/photos', photosRoutes);
+app.use('/broadcasts', broadcastRoutes);
 
 // Socket.IO connection
 io.on('connection', (socket) => {
