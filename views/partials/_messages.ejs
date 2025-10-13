@@ -1,17 +1,36 @@
-<% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
-    <div class="flash-message success">
-        <%= success_msg %>
-    </div>
-<% } %>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
 
-<% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
-    <div class="flash-message error">
-        <%= error_msg %>
-    </div>
-<% } %>
+    <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+        Toast.fire({
+            icon: 'success',
+            title: '<%= success_msg %>'
+        });
+    <% } %>
 
-<% if (typeof error !== 'undefined' && error.length > 0) { %>
-    <div class="flash-message error">
-        <%= error %>
-    </div>
-<% } %>
+    <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+        Toast.fire({
+            icon: 'error',
+            title: '<%= error_msg %>'
+        });
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error.length > 0) { %>
+        Toast.fire({
+            icon: 'error',
+            title: '<%= error %>'
+        });
+    <% } %>
+});
+</script>
