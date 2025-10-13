@@ -5,7 +5,7 @@
             <span class="broadcast-date"><%= new Date(broadcast.createdAt).toLocaleDateString() %></span>
         </header>
         <div class="broadcast-content">
-            <p><%= broadcast.message %></p>
+            <%- broadcast.message %>
         </div>
         <footer class="broadcast-footer">
             <a href="/notifications" class="btn-back">

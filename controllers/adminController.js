@@ -136,7 +136,7 @@ export const postBroadcast = async (req, res) => {
         const usersToNotify = await User.find({ role: 'user', status: 'active' });
 
         const notifications = usersToNotify.map(user => ({
-            user: user._id,
+            recipient: user._id,
             type: 'admin_broadcast',
             message: `A new announcement from Amora Hub: "${message.substring(0, 50)}..."`,
             link: `/broadcasts/${broadcast._id}`
