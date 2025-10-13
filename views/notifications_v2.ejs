@@ -1,0 +1,105 @@
+<div class="notifications-container">
+    <header class="page-header">
+        <h1>Your Notifications</h1>
+        <p>Stay up to date with your latest activity.</p>
+    </header>
+
+    <div class="notifications-list">
+        <% if (notifications && notifications.length > 0) { %>
+            <% notifications.forEach(notification => { %>
+                <a href="<%= notification.link || '#' %>" class="notification-card <%= notification.read ? 'read' : 'unread' %>">
+                    <div class="notification-icon">
+                        <% if (notification.type === 'new_match') { %>
+                            <i class="fas fa-heart-circle-check"></i>
+                        <% } else if (notification.type === 'profile_view') { %>
+                            <i class="fas fa-eye"></i>
+                        <% } else if (notification.type === 'admin_broadcast') { %>
+                            <i class="fas fa-bullhorn"></i>
+                        <% } else { %>
+                            <i class="fas fa-bell"></i>
+                        <% } %>
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-message"><%= notification.message %></p>
+                        <span class="notification-time"><%= new Date(notification.createdAt).toLocaleString() %></span>
+                    </div>
+                </a>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-state">
+                <i class="fas fa-bell-slash"></i>
+                <h2>No Notifications Yet</h2>
+                <p>When you have new activity, it will show up here.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .notifications-container {
+        padding: 2rem;
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .notifications-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .notification-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .notification-card.unread {
+        border-left: 4px solid var(--primary-color, #e53e3e);
+    }
+
+    .notification-icon i {
+        font-size: 1.5rem;
+        color: var(--primary-color, #e53e3e);
+    }
+
+    .notification-message {
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .notification-time {
+        font-size: 0.8rem;
+        color: #718096;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background-color: #f7fafc;
+        border-radius: 8px;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #cbd5e0;
+        margin-bottom: 1rem;
+    }
+</style>

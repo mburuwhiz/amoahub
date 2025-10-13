@@ -80,6 +80,27 @@ export const blockUser = async (req, res) => {
 
 // @desc    Report a user
 // @route   POST /users/:id/report
+export const getNotificationsPage = async (req, res) => {
+    try {
+        const notifications = await Notification.find({ recipient: req.user.id })
+            .sort({ createdAt: -1 })
+            .populate('sender', 'displayName profileImage')
+            .lean();
+
+        res.render('notifications_v2', {
+            title: 'Your Notifications',
+            layout: 'layouts/main_v2',
+            user: req.user,
+            notifications: notifications,
+        });
+
+    } catch (err) {
+        console.error(err);
+        req.flash('error_msg', 'Could not load notifications.');
+        res.redirect('/discover');
+    }
+};
+
 export const reportUser = async (req, res) => {
     try {
         const reportedUserId = req.params.id;
